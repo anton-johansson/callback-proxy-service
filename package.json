@@ -1,0 +1,33 @@
+{
+  "name": "callback-service",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "react": "16.7.0",
+    "react-dom": "16.7.0",
+    "react-md": "1.9.2",
+    "react-scripts": "2.1.3",
+    "webfontloader": "1.6.28"
+  },
+  "scripts": {
+    "build-css": "node-sass-chokidar --include-path ./node_modules src/ -o src/",
+    "watch-css": "npm run build-css && npm run build-css -- --watch --recursive",
+    "start-js": "react-scripts start",
+    "start": "npm-run-all -p watch-css start-js",
+    "build": "npm run build-css && react-scripts build",
+    "test": "react-scripts test"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "devDependencies": {
+    "node-sass-chokidar": "1.3.4",
+    "npm-run-all": "4.1.5"
+  }
+}
