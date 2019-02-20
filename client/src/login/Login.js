@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Card, CardTitle, CardText, TextField } from 'react-md';
 import {connect} from 'react-redux';
-import ky from 'ky';
 import './Login.css';
 import {login} from '../api/auth/actions';
 
