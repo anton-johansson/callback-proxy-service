@@ -1,5 +1,6 @@
 const express = require('express');
 const session = require('express-session');
+const MemoryStore = require('memorystore')(session)
 const parser = require('body-parser');
 const {setProxy, getProxyEndpoint} = require('./database');
 
@@ -13,7 +14,11 @@ app.use('/api/', session({
     name: 'sessionId',
     secret: 'abc123',
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    store: new MemoryStore({
+        checkPeriod: 86400000,
+        ttl: 86400000 * 30
+    })
 }));
 app.use('/api/', (_, response, next) => {
     response.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
