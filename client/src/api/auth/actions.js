@@ -8,10 +8,10 @@ const receiveAuthentication = (username) => ({
 
 export const isAuthenticated = () => {
     return dispatch => {
-        return ky.get('http://localhost:8181/api/is-authenticated')
-            .then(response => {
+        return ky.get('http://localhost:8181/api/is-authenticated', {credentials: 'include'})
+            .then(async response => {
                 if (response.status === 200) {
-                    const authentication = response.json();
+                    const authentication = await response.json();
                     console.log('Is authenticated as', authentication.username);
                     dispatch(receiveAuthentication(authentication.username))
                 } else {
@@ -29,6 +29,7 @@ export const isAuthenticated = () => {
 export const login = (username, password) => {
     return dispatch => {
         const options = {
+            credentials: 'include',
             json: {
                 username,
                 password
@@ -52,9 +53,9 @@ export const login = (username, password) => {
     };
 };
 
-export const LOGOUT = 'LOGOUT';
 export const logout = () => {
-    return ({
-        type: LOGOUT
-    });
+    return dispatch => {
+        return ky.post('http://localhost:8181/api/logout', {credentials: 'include'})
+            .then(_ => dispatch(receiveAuthentication('')));
+    };
 };

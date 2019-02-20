@@ -17,31 +17,6 @@ class Login extends Component {
       };
   }
 
-  componentDidMount = () => {
-    /*
-    console.log('Checking for authentication');
-    ky.get('http://localhost:8181/api/is-authenticated')
-      .then(response => {
-        if (response.status === 200) {
-          const authentication = response.json();
-          console.log('Is authenticated as', authentication.username);
-          this.setState({
-            username: authentication.username,
-            loading: false
-          });
-        } else {
-          console.log('Not authenticated');
-          this.setState({
-            loading: false
-          });
-        }
-      })
-      .catch(err => {
-        console.log('Error checking authentication:', err);
-      })
-      */
-  };
-
   handleLogin = () => {
     this.setState({
       loading: true
@@ -51,30 +26,6 @@ class Login extends Component {
     const password = this.passwordRef.current.value;
 
     this.props.dispatch(login(username, password));
-    /*
-    const options = {
-      json: {
-        username,
-        password
-      }
-    }
-    ky.post('http://localhost:8181/api/authenticate', options)
-      .then(response => {
-        if (response.status === 200) {
-          console.log('Successfully authenticated');
-          this.setState({
-            loading: false,
-            username: username
-          });
-          this.onLogin(username);
-        } else {
-          console.log('Could not authenticate');
-        }
-      })
-      .catch(err => {
-        console.log('Error authenticating:', err);
-      });
-      */
   };
 
   render() {

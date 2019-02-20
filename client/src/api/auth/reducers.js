@@ -1,4 +1,4 @@
-import {LOGOUT, RECEIVE_AUTHENTICATION} from './actions';
+import {RECEIVE_AUTHENTICATION} from './actions';
 
 const authentication = (
     state = {
@@ -12,11 +12,6 @@ const authentication = (
                 ...state,
                 username: action.username
             };
-        case LOGOUT:
-            return {
-                ...state,
-                username: ''
-            }
         default:
             return state;
     }

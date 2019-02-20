@@ -4,16 +4,19 @@ const parser = require('body-parser');
 const {setProxy, getProxyEndpoint} = require('./database');
 
 const app = express();
+app.disable('x-powered-by');
+app.disable('etag');
 
 // API
 app.use('/api/', parser.json());
 app.use('/api/', session({
+    name: 'sessionId',
     secret: 'abc123',
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: false
 }));
 app.use('/api/', (_, response, next) => {
-    response.setHeader('Access-Control-Allow-Origin', '*');
+    response.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
     response.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     response.setHeader('Access-Control-Allow-Credentials', true);
     next();
@@ -32,10 +35,18 @@ app.post('/api/authenticate', (request, response) => {
     if (username === 'viantjoh' && password === 'test') {
         console.log('Successfully logged in as', username);
         request.session.username = username;
+        request.session.save();
         response.sendStatus(200);
     } else {
         response.sendStatus(401);
     }
+});
+app.post('/api/logout', (request, response) => {
+    if (request.session.username) {
+        console.log('Logging out', request.session.username);
+        request.session.destroy();
+    }
+    response.sendStatus(200);
 });
 app.post('/api/set-proxy', (request, response) => {
     const {proxyEndpoint} = request.body;
