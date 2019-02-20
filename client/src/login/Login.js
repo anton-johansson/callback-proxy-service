@@ -1,7 +1,9 @@
-import React, { Component } from 'react';
-import { Button, Card, CardTitle, CardText, TextField } from 'react-md';
+import React, {Component} from 'react';
+import {Button, Card, CardTitle, CardText, TextField} from 'react-md';
 import {connect} from 'react-redux';
 import './Login.css';
+
+// API functions
 import {login} from '../api/auth/actions';
 
 class Login extends Component {

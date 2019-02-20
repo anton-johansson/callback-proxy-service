@@ -1,7 +1,9 @@
-import React, { Component } from 'react';
-import { Button, Card, CardTitle, CardText } from 'react-md';
+import React, {Component} from 'react';
+import {Button, Card, CardTitle, CardText} from 'react-md';
 import {connect} from 'react-redux';
 import './Main.css';
+
+// API functions
 import {logout} from '../api/auth/actions';
 
 class Main extends Component {

@@ -1,7 +1,9 @@
+// React
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Provider} from 'react-redux'
 
+// Redux
 import {createStore, applyMiddleware, combineReducers} from 'redux';
 import {createLogger} from 'redux-logger';
 import thunkMiddleware from 'redux-thunk';
@@ -20,8 +22,6 @@ WebFontLoader.load({
     families: ['Roboto:300,400,500,700', 'Material Icons']
   }
 });
-
-console.log('lol')
 
 const loggerMiddleware = createLogger();
 const store = createStore(
