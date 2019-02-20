@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Button, Card, CardTitle, CardText, TextField } from 'react-md';
+import {connect} from 'react-redux';
 import ky from 'ky';
 import './Login.css';
+import {login} from '../api/auth/actions';
 
 class Login extends Component {
   constructor(props) {
@@ -11,11 +13,12 @@ class Login extends Component {
       this.passwordRef = React.createRef();
       this.state = {
           username: '',
-          loading: true
+          loading: true,
       };
   }
 
   componentDidMount = () => {
+    /*
     console.log('Checking for authentication');
     ky.get('http://localhost:8181/api/is-authenticated')
       .then(response => {
@@ -36,6 +39,7 @@ class Login extends Component {
       .catch(err => {
         console.log('Error checking authentication:', err);
       })
+      */
   };
 
   handleLogin = () => {
@@ -45,6 +49,9 @@ class Login extends Component {
 
     const username = this.usernameRef.current.value;
     const password = this.passwordRef.current.value;
+
+    this.props.dispatch(login(username, password));
+    /*
     const options = {
       json: {
         username,
@@ -67,6 +74,7 @@ class Login extends Component {
       .catch(err => {
         console.log('Error authenticating:', err);
       });
+      */
   };
 
   render() {
@@ -85,4 +93,8 @@ class Login extends Component {
   }
 }
 
-export default Login;
+const mapStateToProps = state => ({
+    username: state.username
+});
+
+export default connect(mapStateToProps)(Login);

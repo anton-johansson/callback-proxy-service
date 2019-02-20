@@ -1,37 +1,29 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
 import Login from './login/Login';
 import Main from './main/Main';
 import './App.css';
 
+// API functions
+import {isAuthenticated} from './api/auth/actions';
+
 class App extends Component {
-  constructor(props) {
-      super(props);
-      this.state = {
-        loading: false,
-        username: ''
-      }
-      this.onLogin = this.onLogin.bind(this);
-  }
-
-  onLogin(username) {
-    this.setState({username});
-  }
-
-  getOutput() {
-    if (this.state.loading) {
-      return <div>Loading...</div>
-    } else if (this.state.username) {
-      return <Main username={this.state.username} />
-    } else {
-      return <Login onLogin={this.onLogin} />
-    }
+  componentDidMount() {
+    this.props.dispatch(isAuthenticated());
   }
 
   render() {
-    const output = this.getOutput();
-    return output;
+    return (
+      <div>
+        {this.props.username && <Main username={this.props.username}/>}
+        {!this.props.username && <Login/>}
+      </div>
+    )
   }
 }
 
+const mapStateToProps = state => ({
+    username: state.username
+});
 
-export default App;
+export default connect(mapStateToProps)(App);

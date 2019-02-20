@@ -20,12 +20,10 @@ app.use('/api/', (_, response, next) => {
 });
 app.get('/api/is-authenticated', (request, response) => {
     const username = request.session.username;
-    console.log(username);
     if (username) {
         console.log('Logged in as', username);
         response.send({username});
     } else {
-        console.log(request.session);
         response.sendStatus(401);
     }
 });
