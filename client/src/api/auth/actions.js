@@ -1,9 +1,9 @@
 import ky from 'ky';
 
 export const RECEIVE_AUTHENTICATION = 'RECEIVE_AUTHENTICATION';
-const receiveAuthentication = (username) => ({
+const receiveAuthentication = (authentication) => ({
     type: RECEIVE_AUTHENTICATION,
-    username
+    authentication
 });
 
 export const isAuthenticated = () => {
@@ -13,15 +13,15 @@ export const isAuthenticated = () => {
                 if (response.status === 200) {
                     const authentication = await response.json();
                     console.log('Is authenticated as', authentication.username);
-                    dispatch(receiveAuthentication(authentication.username))
+                    dispatch(receiveAuthentication(authentication))
                 } else {
                     console.log('Is not authenticated');
-                    dispatch(receiveAuthentication(''));
+                    dispatch(receiveAuthentication());
                 }
             })
             .catch(err => {
                 console.log('Error checking authentication:', err);
-                dispatch(receiveAuthentication(''));
+                dispatch(receiveAuthentication());
             })
     };
 };
@@ -37,18 +37,19 @@ export const login = (username, password) => {
         };
 
         return ky.post('http://localhost:8181/api/authenticate', options)
-            .then(response => {
+            .then(async response => {
                 if (response.status === 200) {
-                    console.log('Successfully authenticated as', username);
-                    dispatch(receiveAuthentication(username));
+                    const authentication = await response.json();
+                    console.log('Successfully authenticated as', authentication.username);
+                    dispatch(receiveAuthentication(authentication));
                 } else {
                     console.log('Bad credentials');
-                    dispatch(receiveAuthentication(''));
+                    dispatch(receiveAuthentication());
                 }
             })
             .catch(err => {
                 console.log('Error authenticating:', err);
-                dispatch(receiveAuthentication(''));
+                dispatch(receiveAuthentication());
             });
     };
 };
@@ -56,6 +57,6 @@ export const login = (username, password) => {
 export const logout = () => {
     return dispatch => {
         return ky.post('http://localhost:8181/api/logout', {credentials: 'include'})
-            .then(_ => dispatch(receiveAuthentication('')));
+            .then(_ => dispatch(receiveAuthentication()));
     };
 };

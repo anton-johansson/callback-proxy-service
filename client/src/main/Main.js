@@ -17,7 +17,7 @@ class Main extends Component {
   render() {
     return (
       <Card className="Main-card">
-        <CardTitle title="Callback proxy" subtitle={`for ${this.props.username}`} />
+        <CardTitle title="Callback proxy" subtitle={`for ${this.props.name}`} />
         <CardText>
           <p>
             asdasd
@@ -34,7 +34,8 @@ class Main extends Component {
 }
 
 const mapStateToProps = state => ({
-    username: state.username
+    username: state.username,
+    name: state.name
 });
 
 export default connect(mapStateToProps)(Main);

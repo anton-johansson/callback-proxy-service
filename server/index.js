@@ -22,10 +22,10 @@ app.use('/api/', (_, response, next) => {
     next();
 });
 app.get('/api/is-authenticated', (request, response) => {
-    const username = request.session.username;
-    if (username) {
+    if (request.session && request.session.username) {
+        const {username, name} = request.session;
         console.log('Logged in as', username);
-        response.send({username});
+        response.send({username, name});
     } else {
         response.sendStatus(401);
     }
@@ -34,16 +34,20 @@ app.post('/api/authenticate', (request, response) => {
     const {username, password} = request.body;
     if (username === 'viantjoh' && password === 'test') {
         console.log('Successfully logged in as', username);
-        request.session.username = username;
+        request.session.username = 'viantjoh';
+        request.session.name = 'Anton Johansson';
         request.session.save();
-        response.sendStatus(200);
+        response.send({
+            username: 'viantjoh',
+            name: 'Anton Johansson'
+        });
     } else {
         response.sendStatus(401);
     }
 });
 app.post('/api/logout', (request, response) => {
     if (request.session.username) {
-        console.log('Logging out', request.session.username);
+        console.log('Logged out', request.session.username);
         request.session.destroy();
     }
     response.sendStatus(200);
