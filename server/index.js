@@ -2,7 +2,7 @@ const express = require('express');
 const session = require('express-session');
 const MemoryStore = require('memorystore')(session)
 const parser = require('body-parser');
-const {setProxy, getProxyEndpoint} = require('./database');
+const {setProxyEndpoint, getProxyEndpoint} = require('./database');
 
 const app = express();
 app.disable('x-powered-by');
@@ -57,13 +57,23 @@ app.post('/api/logout', (request, response) => {
     }
     response.sendStatus(200);
 });
-app.post('/api/set-proxy', (request, response) => {
-    const {proxyEndpoint} = request.body;
+app.post('/api/set-proxy-endpoint', (request, response) => {
     const username = request.session.username;
     if (username) {
-        console.log('Setting proxy endpoint for', username, 'to', proxyEndpoint);
-        setProxy(username, proxyEndpoint);
+        const {endpoint} = request.body;
+        console.log('Setting proxy endpoint for', username, 'to', endpoint);
+        setProxyEndpoint(username, endpoint);
         response.sendStatus(200);
+    } else {
+        response.sendStatus(401);
+    }
+});
+app.get('/api/get-proxy-endpoint', (request, response) => {
+    const username = request.session.username;
+    if (username) {
+        console.log('Getting proxy endpoint for', username);
+        const endpoint = getProxyEndpoint(username);
+        response.send({endpoint});
     } else {
         response.sendStatus(401);
     }

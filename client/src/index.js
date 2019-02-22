@@ -10,6 +10,7 @@ import thunkMiddleware from 'redux-thunk';
 
 // Reducers
 import authReducer from './api/auth/reducers';
+import proxyReducer from './api/proxy/reducers';
 
 // Actual application
 import './index.css';
@@ -25,12 +26,10 @@ WebFontLoader.load({
 
 const loggerMiddleware = createLogger();
 const store = createStore(
-    authReducer,
-    /*
     combineReducers({
-        authentication: authReducer
+        authentication: authReducer,
+        proxy: proxyReducer
     }),
-    */
     applyMiddleware(
         thunkMiddleware,
         loggerMiddleware

@@ -23,7 +23,7 @@ class App extends Component {
 }
 
 const mapStateToProps = state => ({
-    username: state.username
+    username: state.authentication.username
 });
 
 export default connect(mapStateToProps)(App);
