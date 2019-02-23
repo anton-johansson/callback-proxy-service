@@ -6,12 +6,12 @@ import {getEndpointSuggestion} from '../util';
 
 // API functions
 import {logout} from '../api/auth/actions';
-import {setProxyEndpoint, getProxyEndpoint} from '../api/proxy/actions';
+import {setProxyEndpoint, getProxyEndpoint, reset as resetProxy} from '../api/proxy/actions';
 
 class Main extends Component {
   constructor(props) {
       super(props);
-      this.state = {endpoint: ''};
+      this.state = {endpoint: props.endpoint || ''};
       this.onEndpointChange = this.onEndpointChange.bind(this);
       this.onLogout = this.onLogout.bind(this);
       this.onSetEndpoint = this.onSetEndpoint.bind(this);
@@ -24,7 +24,7 @@ class Main extends Component {
 
   componentDidUpdate(previousProps) {
     if (previousProps.endpoint !== this.props.endpoint) {
-      this.setState({endpoint: this.props.endpoint});
+      this.setState({endpoint: this.props.endpoint || ''});
     }
   }
 
@@ -34,6 +34,7 @@ class Main extends Component {
 
   onLogout() {
     this.props.dispatch(logout());
+    this.props.dispatch(resetProxy());
   }
 
   onSetEndpoint() {

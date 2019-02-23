@@ -1,5 +1,10 @@
 import ky from 'ky';
 
+export const PROXY_RESET = 'PROXY_RESET';
+export const reset = () => ({
+    type: PROXY_RESET
+});
+
 export const GET_PROXY_ENDPOINT_PENDING = 'GET_PROXY_ENDPOINT_PENDING';
 const getProxyEndpointPending = () => ({
     type: GET_PROXY_ENDPOINT_PENDING
