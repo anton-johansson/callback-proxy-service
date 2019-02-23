@@ -15,7 +15,7 @@ class App extends Component {
   render() {
     return (
       <div>
-        {this.props.username && <Main username={this.props.username}/>}
+        {this.props.username && <Main/>}
         {!this.props.username && <Login/>}
       </div>
     )
