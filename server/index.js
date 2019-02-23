@@ -3,6 +3,7 @@ const session = require('express-session');
 const MemoryStore = require('memorystore')(session)
 const parser = require('body-parser');
 const {setProxyEndpoint, getProxyEndpoint} = require('./database');
+const dns = require('dns').promises;
 
 const app = express();
 app.disable('x-powered-by');
@@ -26,25 +27,35 @@ app.use('/api/', (_, response, next) => {
     response.setHeader('Access-Control-Allow-Credentials', true);
     next();
 });
-app.get('/api/is-authenticated', (request, response) => {
+app.get('/api/is-authenticated', async (request, response) => {
     if (request.session && request.session.username) {
+        const clientAddress = '10.0.0.12'; //request.ip;
+        const lookup = await dns.reverse(clientAddress);
+        const clientHostname = lookup && lookup.length && lookup[0] || '';
+
         const {username, name} = request.session;
         console.log('Logged in as', username);
-        response.send({username, name});
+        response.send({username, name, clientAddress, clientHostname});
     } else {
         response.sendStatus(401);
     }
 });
-app.post('/api/authenticate', (request, response) => {
+app.post('/api/authenticate', async (request, response) => {
     const {username, password} = request.body;
     if (username === 'viantjoh' && password === 'test') {
+        const clientAddress = '10.0.0.12'; //request.ip;
+        const lookup = await dns.reverse(clientAddress);
+        const clientHostname = lookup && lookup.length && lookup[0] || '';
+
         console.log('Successfully logged in as', username);
         request.session.username = 'viantjoh';
         request.session.name = 'Anton Johansson';
         request.session.save();
         response.send({
             username: 'viantjoh',
-            name: 'Anton Johansson'
+            name: 'Anton Johansson',
+            clientAddress,
+            clientHostname
         });
     } else {
         response.sendStatus(401);
@@ -95,7 +106,7 @@ app.all('/x/:username/*', (request, response) => {
 });
 
 // Start
-app.listen(8181);
+app.listen(8181, '0.0.0.0');
 console.log('Listening on port', 8181);
 
 // TODO: How to handle multiple headers with same name?

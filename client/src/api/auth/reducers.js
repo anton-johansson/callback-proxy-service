@@ -13,7 +13,9 @@ const authentication = (
             return {
                 ...state,
                 username: authentication.username,
-                name: authentication.name
+                name: authentication.name,
+                clientAddress: authentication.clientAddress,
+                clientHostname: authentication.clientHostname
             };
         default:
             return state;
