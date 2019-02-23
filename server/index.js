@@ -5,13 +5,13 @@ const parser = require('body-parser');
 const {setProxyEndpoint, getProxyEndpoint} = require('./database');
 const dns = require('dns').promises;
 
-const app = express();
-app.disable('x-powered-by');
-app.disable('etag');
+const configApp = express();
+configApp.disable('x-powered-by');
+configApp.disable('etag');
 
 // API
-app.use('/api/', parser.json());
-app.use('/api/', session({
+configApp.use('/api/', parser.json());
+configApp.use('/api/', session({
     name: 'sessionId',
     secret: 'abc123',
     resave: false,
@@ -21,13 +21,13 @@ app.use('/api/', session({
         ttl: 86400000 * 30
     })
 }));
-app.use('/api/', (_, response, next) => {
+configApp.use('/api/', (_, response, next) => {
     response.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
     response.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     response.setHeader('Access-Control-Allow-Credentials', true);
     next();
 });
-app.get('/api/is-authenticated', async (request, response) => {
+configApp.get('/api/is-authenticated', async (request, response) => {
     if (request.session && request.session.username) {
         const clientAddress = '10.0.0.12'; //request.ip;
         const lookup = await dns.reverse(clientAddress);
@@ -40,7 +40,7 @@ app.get('/api/is-authenticated', async (request, response) => {
         response.sendStatus(401);
     }
 });
-app.post('/api/authenticate', async (request, response) => {
+configApp.post('/api/authenticate', async (request, response) => {
     const {username, password} = request.body;
     if (username === 'viantjoh' && password === 'test') {
         const clientAddress = '10.0.0.12'; //request.ip;
@@ -61,14 +61,14 @@ app.post('/api/authenticate', async (request, response) => {
         response.sendStatus(401);
     }
 });
-app.post('/api/logout', (request, response) => {
+configApp.post('/api/logout', (request, response) => {
     if (request.session.username) {
         console.log('Logged out', request.session.username);
         request.session.destroy();
     }
     response.sendStatus(200);
 });
-app.post('/api/set-proxy-endpoint', (request, response) => {
+configApp.post('/api/set-proxy-endpoint', (request, response) => {
     const username = request.session.username;
     if (username) {
         const {endpoint} = request.body;
@@ -79,7 +79,7 @@ app.post('/api/set-proxy-endpoint', (request, response) => {
         response.sendStatus(401);
     }
 });
-app.get('/api/get-proxy-endpoint', (request, response) => {
+configApp.get('/api/get-proxy-endpoint', (request, response) => {
     const username = request.session.username;
     if (username) {
         console.log('Getting proxy endpoint for', username);
@@ -91,8 +91,11 @@ app.get('/api/get-proxy-endpoint', (request, response) => {
 });
 
 // Proxy
-app.use('/x/', parser.raw({type: '*/*'}));
-app.all('/x/:username/*', (request, response) => {
+const proxyApp = express();
+proxyApp.disable('x-powered-by');
+proxyApp.disable('etag');
+proxyApp.use(parser.raw({type: '*/*'}));
+proxyApp.all('/:username/*', (request, response) => {
     const username = request.params.username;
     const proxyEndpoint = getProxyEndpoint(username);
     const path = request.params['0'];
@@ -106,8 +109,10 @@ app.all('/x/:username/*', (request, response) => {
 });
 
 // Start
-app.listen(8181, '0.0.0.0');
-console.log('Listening on port', 8181);
+configApp.listen(8181, '0.0.0.0');
+console.log('Config app listening on port', 8181);
+proxyApp.listen(8182, '0.0.0.0');
+console.log('Proxy app listening on port', 8182);
 
 // TODO: How to handle multiple headers with same name?
 // One idea is to not parse it to a map. Instead, just add them individually to the outgoing request.
