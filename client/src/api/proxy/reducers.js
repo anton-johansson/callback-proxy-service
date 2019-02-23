@@ -1,4 +1,4 @@
-import {GET_PROXY_ENDPOINT_FULFILLED} from './actions';
+import {GET_PROXY_ENDPOINT_FULFILLED, SET_PROXY_ENDPOINT_FULFILLED} from './actions';
 
 const proxy = (
     state = {
@@ -7,6 +7,7 @@ const proxy = (
     action
 ) => {
     switch (action.type) {
+        case SET_PROXY_ENDPOINT_FULFILLED:
         case GET_PROXY_ENDPOINT_FULFILLED:
             return {
                 ...state,

@@ -11,14 +11,25 @@ import {setProxyEndpoint, getProxyEndpoint} from '../api/proxy/actions';
 class Main extends Component {
   constructor(props) {
       super(props);
+      this.state = {endpoint: ''};
+      this.onEndpointChange = this.onEndpointChange.bind(this);
       this.onLogout = this.onLogout.bind(this);
       this.onSetEndpoint = this.onSetEndpoint.bind(this);
       this.onSuggest = this.onSuggest.bind(this);
-      this.endpointRef = React.createRef();
   }
 
   componentDidMount() {
     this.props.dispatch(getProxyEndpoint());
+  }
+
+  componentDidUpdate(previousProps) {
+    if (previousProps.endpoint !== this.props.endpoint) {
+      this.setState({endpoint: this.props.endpoint});
+    }
+  }
+
+  onEndpointChange(endpoint) {
+    this.setState({endpoint});
   }
 
   onLogout() {
@@ -26,14 +37,15 @@ class Main extends Component {
   }
 
   onSetEndpoint() {
-    const endpoint = this.endpointRef.current.value;
+    const endpoint = this.state.endpoint;
     this.props.dispatch(setProxyEndpoint(endpoint));
   }
 
   onSuggest() {
-    const suggestion = getEndpointSuggestion(this.props.clientAddress, this.props.clientHostname);
-    console.log('suggestion', suggestion);
-    // TODO: update hostname reference
+    const endpoint = getEndpointSuggestion(this.props.clientAddress, this.props.clientHostname);
+    if (endpoint !== this.state.endpoint) {
+      this.setState({endpoint});
+    }
   }
 
   render() {
@@ -41,9 +53,9 @@ class Main extends Component {
       <Card className="Main-card">
         <CardTitle title="Callback proxy" subtitle={`for ${this.props.name}`} />
         <CardText>
-          <TextField id="endpoint" label="Endpoint" type="text" defaultValue={this.props.proxyEndpoint} ref={this.endpointRef} />
+          <TextField id="endpoint" label="Endpoint" type="text" value={this.state.endpoint} onChange={this.onEndpointChange} />
           <p>
-            <Button raised primary disabled={false} onClick={this.onSetEndpoint}>
+            <Button raised primary disabled={this.state.endpoint === this.props.endpoint} onClick={this.onSetEndpoint}>
               Set endpoint
             </Button>
             &nbsp;
@@ -66,7 +78,7 @@ const mapStateToProps = state => ({
     name: state.authentication.name,
     clientAddress: state.authentication.clientAddress,
     clientHostname: state.authentication.clientHostname,
-    proxyEndpoint: state.proxy.endpoint
+    endpoint: state.proxy.endpoint
 });
 
 export default connect(mapStateToProps)(Main);
