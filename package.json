@@ -14,6 +14,7 @@
     "body-parser": "1.18.3",
     "express": "4.16.4",
     "express-session": "1.15.6",
+    "ldapjs": "1.0.2",
     "lowdb": "1.0.0",
     "memorystore": "1.6.0"
   }

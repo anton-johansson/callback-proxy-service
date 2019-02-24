@@ -2,8 +2,9 @@ const express = require('express');
 const session = require('express-session');
 const MemoryStore = require('memorystore')(session)
 const parser = require('body-parser');
-const {setProxyEndpoint, getProxyEndpoint} = require('./database');
 const dns = require('dns').promises;
+const {setProxyEndpoint, getProxyEndpoint} = require('./database');
+const {authenticate} = require('./auth');
 
 const configApp = express();
 configApp.disable('x-powered-by');
@@ -40,26 +41,29 @@ configApp.get('/api/is-authenticated', async (request, response) => {
         response.sendStatus(401);
     }
 });
-configApp.post('/api/authenticate', async (request, response) => {
+configApp.post('/api/authenticate', (request, response) => {
     const {username, password} = request.body;
-    if (username === 'viantjoh' && password === 'test') {
-        const clientAddress = '10.0.0.12'; //request.ip;
-        const lookup = await dns.reverse(clientAddress);
-        const clientHostname = lookup && lookup.length && lookup[0] || '';
+    authenticate(username, password)
+        .then(async user => {
+            const clientAddress = '10.0.0.12'; //request.ip;
+            const lookup = await dns.reverse(clientAddress);
+            const clientHostname = lookup && lookup.length && lookup[0] || '';
 
-        console.log('Successfully logged in as', username);
-        request.session.username = 'viantjoh';
-        request.session.name = 'Anton Johansson';
-        request.session.save();
-        response.send({
-            username: 'viantjoh',
-            name: 'Anton Johansson',
-            clientAddress,
-            clientHostname
+            console.log('Successfully logged in as', username);
+            request.session.username = user.username;
+            request.session.name = user.name;
+            request.session.save();
+            response.send({
+                username: user.username,
+                name: user.name,
+                clientAddress,
+                clientHostname
+            });
+        })
+        .catch(error => {
+            console.log('Error authenticating', error);
+            response.sendStatus(401);
         });
-    } else {
-        response.sendStatus(401);
-    }
 });
 configApp.post('/api/logout', (request, response) => {
     if (request.session.username) {
