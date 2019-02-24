@@ -1,11 +1,8 @@
 const ldap = require('ldapjs');
 const {readFileSync} = require('fs');
+const config = require('../config')().ldap;
 
-const domain = process.env.LDAP_DOMAIN;
-const url = process.env.LDAP_URL;
-const caPath = process.env.LDAP_CA_PATH;
-const searchBase = process.env.LDAP_SEARCH_BASE;
-
+/*
 let ca = undefined;
 const readCA = () => {
     if (ca) {
@@ -13,16 +10,17 @@ const readCA = () => {
     }
     return ca = readFileSync(caPath, 'UTF-8');
 }
+*/
 
 const createClient = () => {
-    const ca = readCA();
+//    const ca = readCA();
     return ldap.createClient({
-        url,
+        url: config.url,
         connectTimeout: 5000,
         timeout: 5000,
         tlsOptions: {
             rejectUnauthorized: false, // TODO: should be fixed, when CA actually works
-            ca: [ca]
+//            ca: [ca]
         }
     });
 };
@@ -35,25 +33,30 @@ const authenticate = (username, password) => {
             client.destroy();
         };
 
-        client.bind(`${username}@${domain}`, password, function(error) {
+        client.bind(`${username}@${config.domain}`, password, function(error) {
             if (error) {
                 close(client);
                 reject(new Error('Bad credentials'));
                 return;
             }
-            
+
             const options = {
                 filter: `(sAMAccountName=${username})`,
                 scope: "sub",
-                attributes: ['cn', 'sAMAccountName', 'mail']
+                attributes: [config.attributes.username, config.attributes.name, config.attributes.email]
             };
-            client.search(searchBase, options, (error, response) => {
+            client.search(config.searchBase, options, (error, response) => {
+                if (error) {
+                    console.log('Error occurred when searching LDAP', error);
+                    reject(error);
+                }
+
                 let user = undefined;
                 response.on('searchEntry', entry => {
                     user = {
-                        username: entry.object.sAMAccountName,
-                        name: entry.object.cn,
-                        email: entry.object.mail
+                        username: entry.object[config.attributes.username],
+                        name: entry.object[config.attributes.name],
+                        email: entry.object[config.attributes.email]
                     }
                 });
                 response.on('error', error => {

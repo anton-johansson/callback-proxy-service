@@ -1,7 +1,8 @@
 const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
+const config = require('../config')().database;
 
-const adapter = new FileSync('/home/anton/callback-service.json');
+const adapter = new FileSync(config.fileName);
 const database = low(adapter);
 database.defaults({users: {}}).write();
 

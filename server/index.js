@@ -5,6 +5,7 @@ const parser = require('body-parser');
 const dns = require('dns').promises;
 const {setProxyEndpoint, getProxyEndpoint} = require('./database');
 const {authenticate} = require('./auth');
+const config = require('./config')().http;
 
 const configApp = express();
 configApp.disable('x-powered-by');
@@ -14,7 +15,7 @@ configApp.disable('etag');
 configApp.use('/api/', parser.json());
 configApp.use('/api/', session({
     name: 'sessionId',
-    secret: 'abc123',
+    secret: config.session.secret,
     resave: false,
     saveUninitialized: false,
     store: new MemoryStore({
@@ -113,10 +114,10 @@ proxyApp.all('/:username/*', (request, response) => {
 });
 
 // Start
-configApp.listen(8181, '0.0.0.0');
-console.log('Config app listening on port', 8181);
-proxyApp.listen(8182, '0.0.0.0');
-console.log('Proxy app listening on port', 8182);
+configApp.listen(config.configPort, '0.0.0.0');
+console.log('Config app listening on port', config.configPort);
+proxyApp.listen(config.proxyPort, '0.0.0.0');
+console.log('Proxy app listening on port', config.proxyPort);
 
 // TODO: How to handle multiple headers with same name?
 // One idea is to not parse it to a map. Instead, just add them individually to the outgoing request.
