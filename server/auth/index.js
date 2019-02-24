@@ -36,7 +36,7 @@ const authenticate = (username, password) => {
         client.bind(`${username}@${config.domain}`, password, function(error) {
             if (error) {
                 close(client);
-                reject(new Error('Bad credentials'));
+                reject(error);
                 return;
             }
 

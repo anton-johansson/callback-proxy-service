@@ -1,4 +1,6 @@
 language: node_js
 node_js:
   - 10
-script: npm run build
+services:
+  - docker
+script: npm run build && docker build -t callback-service .

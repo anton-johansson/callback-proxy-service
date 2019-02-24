@@ -6,6 +6,7 @@ const dns = require('dns').promises;
 const {setProxyEndpoint, getProxyEndpoint} = require('./database');
 const {authenticate} = require('./auth');
 const config = require('./config')().http;
+const {reverseDnsLookup} = require('./util');
 
 const configApp = express();
 configApp.disable('x-powered-by');
@@ -32,7 +33,7 @@ configApp.use('/api/', (_, response, next) => {
 configApp.get('/api/is-authenticated', async (request, response) => {
     if (request.session && request.session.username) {
         const clientAddress = '10.0.0.12'; //request.ip;
-        const lookup = await dns.reverse(clientAddress);
+        const lookup = await reverseDnsLookup(clientAddress);
         const clientHostname = lookup && lookup.length && lookup[0] || '';
 
         const {username, name} = request.session;
@@ -47,7 +48,7 @@ configApp.post('/api/authenticate', (request, response) => {
     authenticate(username, password)
         .then(async user => {
             const clientAddress = '10.0.0.12'; //request.ip;
-            const lookup = await dns.reverse(clientAddress);
+            const lookup = await reverseDnsLookup(clientAddress);
             const clientHostname = lookup && lookup.length && lookup[0] || '';
 
             console.log('Successfully logged in as', username);
@@ -94,6 +95,7 @@ configApp.get('/api/get-proxy-endpoint', (request, response) => {
         response.sendStatus(401);
     }
 });
+configApp.use(express.static('client'));
 
 // Proxy
 const proxyApp = express();
