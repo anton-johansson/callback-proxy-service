@@ -6,6 +6,6 @@ services:
 script: npm run build && docker build -t $DOCKER_USERNAME/callback-proxy-service .
 deploy:
   provider: script
-  script: deploy.sh
+  script: bash ./deploy.sh
   on:
     tags: true
