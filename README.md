@@ -8,9 +8,26 @@ Provides an HTTP service that is useful for developers working with third party 
 
 ## Running
 
+Build and install necessary dependencies:
+
+```shell
+$ npm run build
+```
+
+Start the application in development mode:
+
 ```
 $ npm run dev
 ```
+
+This starts three processes that is watching for changes:
+
+* `server`: Starts a HTTP server, serving the server application on port 8181, re-starting automatically if server-files are changed.
+* `client / start`: Starts the client application on port 3000, re-loading the page automatically if client-files are changed.
+* `client / watch-css`: Watches for changes to `*.scss` files and compiles them to `*.css`.
+
+In production mode, the server and client would be served on the same port, but in development mode we use different ones in order to get auto-reloads working properly.
+
 
 ## Configuration
 

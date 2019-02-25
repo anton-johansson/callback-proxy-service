@@ -2,7 +2,6 @@ const express = require('express');
 const session = require('express-session');
 const MemoryStore = require('memorystore')(session)
 const parser = require('body-parser');
-const dns = require('dns').promises;
 const {setProxyEndpoint, getProxyEndpoint} = require('./database');
 const {authenticate} = require('./auth');
 const config = require('./config')().http;
