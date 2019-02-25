@@ -3,4 +3,9 @@ node_js:
   - 10
 services:
   - docker
-script: npm run build && docker build -t callback-proxy-service .
+script: npm run build && docker build -t $DOCKER_USERNAME/callback-proxy-service .
+deploy:
+  provider: script
+  script: deploy.sh
+  on:
+    tags: true
