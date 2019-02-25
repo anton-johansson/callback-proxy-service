@@ -4,6 +4,7 @@ Provides an HTTP service that is useful for developers working with third party 
 
 [![Build status](https://travis-ci.org/anton-johansson/callback-proxy-service.svg?branch=master)](https://travis-ci.org/anton-johansson/callback-proxy-service)
 [![Version](https://img.shields.io/github/package-json/v/anton-johansson/callback-proxy-service.svg)](https://github.com/anton-johansson/callback-proxy-service/releases)
+[![Docker Pulls](https://img.shields.io/docker/pulls/antonjohansson/callback-proxy-service.svg)](https://hub.docker.com/r/antonjohansson/callback-proxy-service)
 
 
 ## Running
