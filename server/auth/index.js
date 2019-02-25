@@ -41,7 +41,7 @@ const authenticate = (username, password) => {
             }
 
             const options = {
-                filter: `(sAMAccountName=${username})`,
+                filter: `(${config.attributes.username}=${username})`,
                 scope: "sub",
                 attributes: [config.attributes.username, config.attributes.name, config.attributes.email]
             };
