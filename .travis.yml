@@ -3,4 +3,4 @@ node_js:
   - 10
 services:
   - docker
-script: npm run build && docker build -t callback-service .
+script: npm run build && docker build -t callback-proxy-service .

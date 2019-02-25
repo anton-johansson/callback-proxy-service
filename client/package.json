@@ -1,5 +1,5 @@
 {
-  "name": "callback-service-client",
+  "name": "callback-proxy-service-client",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

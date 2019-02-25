@@ -1,9 +1,9 @@
-# Callback service
+# Callback proxy service
 
 Provides an HTTP service that is useful for developers working with third party services performing some kind of webhooks. You set up a local proxy, and make it publically available over the internet and you use that public address when communicating with the third party. Those public webhook calls will smoothly land on your local development environment.
 
-[![Build status](https://travis-ci.org/anton-johansson/callback-service.svg?branch=master)](https://travis-ci.org/anton-johansson/callback-service)
-[![Version](https://img.shields.io/github/package-json/v/anton-johansson/callback-service.svg)](https://github.com/anton-johansson/callback-service/releases)
+[![Build status](https://travis-ci.org/anton-johansson/callback-proxy-service.svg?branch=master)](https://travis-ci.org/anton-johansson/callback-proxy-service)
+[![Version](https://img.shields.io/github/package-json/v/anton-johansson/callback-proxy-service.svg)](https://github.com/anton-johansson/callback-proxy-service/releases)
 
 
 ## Running
@@ -31,7 +31,7 @@ In production mode, the server and client would be served on the same port, but 
 
 ## Configuration
 
-The service is configured using a YAML file, located at `/etc/callback-service/callback-service.yaml` (but can be overridden with the environment variable `CONFIG_FILE_PATH`). Here's an example configuration file:
+The service is configured using a YAML file, located at `/etc/callback-proxy-service/callback-proxy-service.yaml` (but can be overridden with the environment variable `CONFIG_FILE_PATH`). Here's an example configuration file:
 
 ```yaml
 http:
@@ -42,7 +42,7 @@ http:
 ui:
   suggestionPath: :8080
 database:
-  fileName: /var/callback-service/callback-service.json
+  fileName: /var/callback-proxy-service/callback-proxy-service.json
 ldap:
   domain: ...
   url: ...

@@ -2,7 +2,7 @@ const yaml = require('js-yaml');
 const fs = require('fs');
 const assign = require('object-assign-deep');
 
-const configFilePath = process.env.CONFIG_FILE_PATH || '/etc/callback-service/callback-service.yaml';
+const configFilePath = process.env.CONFIG_FILE_PATH || '/etc/callback-proxy-service/callback-proxy-service.yaml';
 const defaultConfig = {
     http: {
         configPort: 8181,
@@ -19,7 +19,7 @@ const defaultConfig = {
         }
     },
     database: {
-        fileName: '/var/callback-service/database.json'
+        fileName: '/var/callback-proxy-service/database.json'
     }
 };
 
