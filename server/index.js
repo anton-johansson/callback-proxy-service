@@ -2,16 +2,18 @@ const express = require('express');
 const session = require('express-session');
 const MemoryStore = require('memorystore')(session)
 const parser = require('body-parser');
+const http = require('http');
+const httpProxy = require('http-proxy');
+const {URL} = require('url');
 const {setProxyEndpoint, getProxyEndpoint} = require('./database');
 const {authenticate} = require('./auth');
 const config = require('./config')().http;
-const {reverseDnsLookup} = require('./util');
+const {getUserAndPath, reverseDnsLookup} = require('./util');
 
+// Config application
 const configApp = express();
 configApp.disable('x-powered-by');
 configApp.disable('etag');
-
-// API
 configApp.use('/api/', parser.json());
 configApp.use('/api/', session({
     name: 'sessionId',
@@ -96,22 +98,20 @@ configApp.get('/api/get-proxy-endpoint', (request, response) => {
 });
 configApp.use(express.static('client'));
 
-// Proxy
-const proxyApp = express();
-proxyApp.disable('x-powered-by');
-proxyApp.disable('etag');
-proxyApp.use(parser.raw({type: '*/*'}));
-proxyApp.all('/:username/*', (request, response) => {
-    const username = request.params.username;
-    const proxyEndpoint = getProxyEndpoint(username);
-    const path = request.params['0'];
-    const method = request.method;
-    const headers = getHeaders(request);
-    const body = request.body;
-    console.log(method, proxyEndpoint + '/' + path);
-    console.log(headers);
-    console.log(body);
-    response.sendStatus(200);
+// Proxy application
+const proxy = httpProxy.createProxyServer({});
+const proxyApp = http.createServer((request, response) => {
+    const {username, path} = getUserAndPath(request.url);
+    const target = getProxyEndpoint(username);
+    if (!target) {
+        console.log(`Requested proxy for \'${username}\' but it's not configured`);
+        response.writeHead(404);
+        response.end();
+        return;
+    }
+
+    request.url = path;
+    proxy.web(request, response, {target});
 });
 
 // Start
@@ -119,17 +119,3 @@ configApp.listen(config.configPort, '0.0.0.0');
 console.log('Config app listening on port', config.configPort);
 proxyApp.listen(config.proxyPort, '0.0.0.0');
 console.log('Proxy app listening on port', config.proxyPort);
-
-// TODO: How to handle multiple headers with same name?
-// One idea is to not parse it to a map. Instead, just add them individually to the outgoing request.
-function getHeaders(request) {
-    const rawHeaders = request.rawHeaders;
-    var index = 0;
-    var headers = {};
-    while (index < rawHeaders.length) {
-        const headerName = rawHeaders[index++];
-        const headerValue = rawHeaders[index++];
-        headers[headerName] = headerValue;
-    }
-    return headers;
-}
