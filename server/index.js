@@ -5,7 +5,7 @@ const parser = require('body-parser');
 const http = require('http');
 const httpProxy = require('http-proxy');
 const {URL} = require('url');
-const {setProxyEndpoint, getProxyEndpoint} = require('./database');
+const {setProxyEndpoint, getProxyEndpoint, saveCallbackHistory} = require('./database');
 const {authenticate} = require('./auth');
 const config = require('./config')();
 const {getUserAndPath, reverseDnsLookup} = require('./util');
@@ -105,6 +105,15 @@ const proxyApp = http.createServer((request, response) => {
         response.end();
         return;
     }
+
+    const callbackData = {
+        remoteAddress: request.connection.remoteAddress,
+        headers: request.headers,
+        path: request.url,
+        method: request.method
+        //body: ???
+    };
+    saveCallbackHistory(username, callbackData);
 
     log.info(`Performing proxy request for ${username}`);
     request.url = path;
