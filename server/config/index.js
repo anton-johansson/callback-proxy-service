@@ -20,17 +20,18 @@ const defaultConfig = {
     },
     database: {
         fileName: '/var/callback-proxy-service/database.json'
+    },
+    log: {
+        level: 'debug'
     }
 };
 
 let config = undefined;
 module.exports = () => {
     if (config) {
-        console.log('Using cached config');
         return config;
     }
 
-    console.log('Building config');
     const userConfigData = fs.readFileSync(configFilePath);
     const userConfig = yaml.load(userConfigData);
     return config = assign(defaultConfig, userConfig);
