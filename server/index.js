@@ -8,7 +8,7 @@ const {URL} = require('url');
 const {setProxyEndpoint, getProxyEndpoint, saveCallbackHistory} = require('./database');
 const {authenticate} = require('./auth');
 const config = require('./config')();
-const {getUserAndPath, reverseDnsLookup} = require('./util');
+const {getUserAndPath, reverseDnsLookup, getRemoteAddress} = require('./util');
 const {logging, setLevel} = require('./logging');
 
 // Set up logging
@@ -107,7 +107,7 @@ const proxyApp = http.createServer((request, response) => {
     }
 
     const callbackData = {
-        remoteAddress: request.connection.remoteAddress,
+        remoteAddress: getRemoteAddress(request),
         headers: request.headers,
         path: request.url,
         method: request.method

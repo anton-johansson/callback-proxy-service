@@ -19,3 +19,11 @@ module.exports.getUserAndPath = path => {
 module.exports.reverseDnsLookup = ip => {
     return dns.reverse(ip).catch(() => '');
 };
+
+module.exports.getRemoteAddress = request => {
+    return (request.headers['x-forwarded-for'] || '').split(',').pop()
+        || request.connection.remoteAddress
+        || request.socket.remoteAddress
+        || request.connection.socket.remoteAddress
+        || '???';
+};
