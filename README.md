@@ -46,6 +46,8 @@ ui:
   suggestionPath: :8080
 database:
   fileName: /var/callback-proxy-service/callback-proxy-service.json
+  callbackHistorySize: 10
+  targetHistorySize: 10
 ldap:
   domain: ...
   url: ...
