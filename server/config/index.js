@@ -20,7 +20,8 @@ const defaultConfig = {
     },
     database: {
         fileName: '/var/callback-proxy-service/database.json',
-        callbackHistorySize: 10
+        callbackHistorySize: 10,
+        targetHistorySize: 10
     },
     log: {
         level: 'debug'
