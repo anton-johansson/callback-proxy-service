@@ -7,8 +7,13 @@ const httpProxy = require('http-proxy');
 const {URL} = require('url');
 const {setProxyEndpoint, getProxyEndpoint} = require('./database');
 const {authenticate} = require('./auth');
-const config = require('./config')().http;
+const config = require('./config')();
 const {getUserAndPath, reverseDnsLookup} = require('./util');
+const {logging, setLevel} = require('./logging');
+
+// Set up logging
+setLevel(config.log.level);
+const log = logging(module);
 
 // Config application
 const configApp = express();
@@ -17,7 +22,7 @@ configApp.disable('etag');
 configApp.use('/api/', parser.json());
 configApp.use('/api/', session({
     name: 'sessionId',
-    secret: config.session.secret,
+    secret: config.http.session.secret,
     resave: false,
     saveUninitialized: false,
     store: new MemoryStore({
@@ -52,7 +57,7 @@ configApp.post('/api/authenticate', (request, response) => {
             const lookup = await reverseDnsLookup(clientAddress);
             const clientHostname = lookup && lookup.length && lookup[0] || '';
 
-            console.log('Successfully logged in as', username);
+            log.info(`Successfully logged in as ${username}`);
             request.session.username = user.username;
             request.session.name = user.name;
             request.session.save();
@@ -64,13 +69,13 @@ configApp.post('/api/authenticate', (request, response) => {
             });
         })
         .catch(error => {
-            console.log('Error authenticating', error);
+            log.info(`Error authenticating: ${error}`);
             response.sendStatus(401);
         });
 });
 configApp.post('/api/logout', (request, response) => {
     if (request.session.username) {
-        console.log('Logged out', request.session.username);
+        log.info(`Logged out ${request.session.username}`);
         request.session.destroy();
     }
     response.sendStatus(200);
@@ -79,7 +84,7 @@ configApp.post('/api/set-proxy-endpoint', (request, response) => {
     const username = request.session.username;
     if (username) {
         const {endpoint} = request.body;
-        console.log('Setting proxy endpoint for', username, 'to', endpoint);
+        log.info(`Setting proxy endpoint for ${username} to ${endpoint}`);
         setProxyEndpoint(username, endpoint);
         response.sendStatus(200);
     } else {
@@ -89,7 +94,7 @@ configApp.post('/api/set-proxy-endpoint', (request, response) => {
 configApp.get('/api/get-proxy-endpoint', (request, response) => {
     const username = request.session.username;
     if (username) {
-        console.log('Getting proxy endpoint for', username);
+        log.info(`Getting proxy endpoint for ${username}`);
         const endpoint = getProxyEndpoint(username);
         response.send({endpoint});
     } else {
@@ -104,18 +109,19 @@ const proxyApp = http.createServer((request, response) => {
     const {username, path} = getUserAndPath(request.url);
     const target = getProxyEndpoint(username);
     if (!target) {
-        console.log(`Requested proxy for \'${username}\' but it's not configured`);
+        log.info(`Requested proxy for \'${username}\' but it's not configured`);
         response.writeHead(404);
         response.end();
         return;
     }
 
+    log.info(`Performing proxy request for ${username}`);
     request.url = path;
     proxy.web(request, response, {target});
 });
 
 // Start
-configApp.listen(config.configPort, '0.0.0.0');
-console.log('Config app listening on port', config.configPort);
-proxyApp.listen(config.proxyPort, '0.0.0.0');
-console.log('Proxy app listening on port', config.proxyPort);
+configApp.listen(config.http.configPort, '0.0.0.0');
+log.info(`Config app listening on port ${config.http.configPort}`);
+proxyApp.listen(config.http.proxyPort, '0.0.0.0');
+log.info(`Proxy app listening on port ${config.http.proxyPort}`);

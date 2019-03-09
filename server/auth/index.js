@@ -1,6 +1,7 @@
 const ldap = require('ldapjs');
 const {readFileSync} = require('fs');
 const config = require('../config')().ldap;
+const log = require('../logging').logging(module);
 
 /*
 let ca = undefined;
@@ -33,8 +34,10 @@ const authenticate = (username, password) => {
             client.destroy();
         };
 
+        log.debug(`Searching for user ${username}`);
         client.bind(`${username}@${config.domain}`, password, function(error) {
             if (error) {
+                log.debug(`Error occurred when binding: ${error}`);
                 close(client);
                 reject(error);
                 return;
@@ -47,7 +50,8 @@ const authenticate = (username, password) => {
             };
             client.search(config.searchBase, options, (error, response) => {
                 if (error) {
-                    console.log('Error occurred when searching LDAP', error);
+                log.debug(`Error occurred when searching: ${error}`);
+                    log.error('Error occurred when searching LDAP', error);
                     reject(error);
                 }
 

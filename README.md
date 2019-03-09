@@ -54,6 +54,8 @@ ldap:
     username: sAMAccountName
     name: cn
     email: mail
+log:
+  level: warn
 ```
 
 
