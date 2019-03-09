@@ -42,7 +42,7 @@ configApp.get('/api/check-authenticated', async (request, response) => {
         const clientHostname = lookup && lookup.length && lookup[0] || '';
 
         const {username, name} = request.session;
-        console.log('Logged in as', username);
+        log.info(`Is logged in as ${username}`);
         response.send({username, name, clientAddress, clientHostname});
     } else {
         response.sendStatus(401);
@@ -74,7 +74,6 @@ configApp.post('/api/set-target', (request, response) => {
     const username = request.session.username;
     if (username) {
         const {target} = request.body;
-        log.info(`Setting target for ${username} to ${target}`);
         setTarget(username, target);
         response.sendStatus(200);
     } else {
@@ -84,7 +83,6 @@ configApp.post('/api/set-target', (request, response) => {
 configApp.get('/api/get-target', (request, response) => {
     const username = request.session.username;
     if (username) {
-        log.info(`Getting target for ${username}`);
         const target = getTarget(username);
         response.send({target});
     } else {
