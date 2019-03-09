@@ -6,9 +6,9 @@ const receiveAuthentication = (authentication) => ({
     authentication
 });
 
-export const isAuthenticated = () => {
+export const checkAuthentication = () => {
     return dispatch => {
-        return ky.get('http://localhost:8181/api/is-authenticated', {credentials: 'include'})
+        return ky.get('http://localhost:8181/api/check-authenticated', {credentials: 'include'})
             .then(async response => {
                 if (response.status === 200) {
                     const authentication = await response.json();
@@ -39,9 +39,8 @@ export const login = (username, password) => {
         return ky.post('http://localhost:8181/api/authenticate', options)
             .then(async response => {
                 if (response.status === 200) {
-                    const authentication = await response.json();
-                    console.log('Successfully authenticated as', authentication.username);
-                    dispatch(receiveAuthentication(authentication));
+                    console.log('Successfully logged in, checking credentials');
+                    dispatch(checkAuthentication());
                 } else {
                     console.log('Bad credentials');
                     dispatch(receiveAuthentication());

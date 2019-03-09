@@ -36,7 +36,7 @@ configApp.use('/api/', (_, response, next) => {
     response.setHeader('Access-Control-Allow-Credentials', true);
     next();
 });
-configApp.get('/api/is-authenticated', async (request, response) => {
+configApp.get('/api/check-authenticated', async (request, response) => {
     if (request.session && request.session.username) {
         const clientAddress = '10.0.0.12'; //request.ip;
         const lookup = await reverseDnsLookup(clientAddress);
@@ -52,21 +52,12 @@ configApp.get('/api/is-authenticated', async (request, response) => {
 configApp.post('/api/authenticate', (request, response) => {
     const {username, password} = request.body;
     authenticate(username, password)
-        .then(async user => {
-            const clientAddress = '10.0.0.12'; //request.ip;
-            const lookup = await reverseDnsLookup(clientAddress);
-            const clientHostname = lookup && lookup.length && lookup[0] || '';
-
-            log.info(`Successfully logged in as ${username}`);
+        .then(user => {
+            log.info(`Successfully logged in as ${user.username}`);
             request.session.username = user.username;
             request.session.name = user.name;
             request.session.save();
-            response.send({
-                username: user.username,
-                name: user.name,
-                clientAddress,
-                clientHostname
-            });
+            response.sendStatus(200);
         })
         .catch(error => {
             log.info(`Error authenticating: ${error}`);

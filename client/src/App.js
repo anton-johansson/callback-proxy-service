@@ -5,11 +5,11 @@ import Main from './main/Main';
 import './App.css';
 
 // API functions
-import {isAuthenticated} from './api/auth/actions';
+import {checkAuthentication} from './api/auth/actions';
 
 class App extends Component {
   componentDidMount() {
-    this.props.dispatch(isAuthenticated());
+    this.props.dispatch(checkAuthentication());
   }
 
   render() {
