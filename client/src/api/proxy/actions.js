@@ -5,84 +5,84 @@ export const reset = () => ({
     type: PROXY_RESET
 });
 
-export const GET_PROXY_ENDPOINT_PENDING = 'GET_PROXY_ENDPOINT_PENDING';
-const getProxyEndpointPending = () => ({
-    type: GET_PROXY_ENDPOINT_PENDING
+export const GET_TARGET_PENDING = 'GET_TARGET_PENDING';
+const getTargetPending = () => ({
+    type: GET_TARGET_PENDING
 });
 
-export const GET_PROXY_ENDPOINT_FULFILLED = 'GET_PROXY_ENDPOINT_FULFILLED';
-const getProxyEndpointFulfilled = (endpoint) => ({
-    type: GET_PROXY_ENDPOINT_FULFILLED,
-    endpoint
+export const GET_TARGET_FULFILLED = 'GET_TARGET_FULFILLED';
+const getTargetFulfilled = (target) => ({
+    type: GET_TARGET_FULFILLED,
+    target
 });
 
-export const GET_PROXY_ENDPOINT_REJECTED = 'GET_PROXY_ENDPOINT_REJECTED';
-const getProxyEndpointRejected = (errorMessage) => ({
-    type: GET_PROXY_ENDPOINT_REJECTED,
+export const GET_TARGET_REJECTED = 'GET_TARGET_REJECTED';
+const getTargetRejected = (errorMessage) => ({
+    type: GET_TARGET_REJECTED,
     errorMessage
 });
 
-export const getProxyEndpoint = () => {
+export const getTarget = () => {
     return dispatch => {
-        dispatch(getProxyEndpointPending());
+        dispatch(getTargetPending());
 
-        return ky.get('http://localhost:8181/api/get-proxy-endpoint', {credentials: 'include'})
+        return ky.get('http://localhost:8181/api/get-target', {credentials: 'include'})
             .then(async response => {
                 if (response.status === 200) {
                     const data = await response.json();
-                    dispatch(getProxyEndpointFulfilled(data.endpoint));
+                    dispatch(getTargetFulfilled(data.target));
                 } else {
-                    console.log('Unknown status when setting proxy endpoint:', response.status);
-                    dispatch(getProxyEndpointRejected('Unknown status: ' + response.status));
+                    console.log('Unknown status when setting target:', response.status);
+                    dispatch(getTargetRejected('Unknown status: ' + response.status));
                 }
-            }).catch(err => {
-                console.log('Error getting proxy endpoint:', err);
-                dispatch(getProxyEndpointRejected('Unknown error: ' + err));
+            }).catch(error => {
+                console.log('Error getting target:', error);
+                dispatch(getTargetRejected('Unknown error: ' + error));
             });
     };
 }
 
-export const SET_PROXY_ENDPOINT_PENDING = 'SET_PROXY_ENDPOINT_PENDING';
-const setProxyEndpointPending = (endpoint) => ({
-    type: SET_PROXY_ENDPOINT_PENDING,
-    endpoint
+export const SET_TARGET_PENDING = 'SET_TARGET_PENDING';
+const setTargetPending = (target) => ({
+    type: SET_TARGET_PENDING,
+    target
 });
 
-export const SET_PROXY_ENDPOINT_FULFILLED = 'SET_PROXY_ENDPOINT_FULFILLED';
-const setProxyEndpointFulfilled = (endpoint) => ({
-    type: SET_PROXY_ENDPOINT_FULFILLED,
-    endpoint
+export const SET_TARGET_FULFILLED = 'SET_TARGET_FULFILLED';
+const setTargetFulfilled = (target) => ({
+    type: SET_TARGET_FULFILLED,
+    target
 });
 
-export const SET_PROXY_ENDPOINT_REJECTED = 'SET_PROXY_ENDPOINT_REJECTED';
-const setProxyEndpointRejected = (errorMessage) => ({
-    type: SET_PROXY_ENDPOINT_REJECTED,
+export const SET_TARGET_REJECTED = 'SET_TARGET_REJECTED';
+const setTargetRejected = (errorMessage) => ({
+    type: SET_TARGET_REJECTED,
     errorMessage
 });
 
-export const setProxyEndpoint = (endpoint) => {
+export const setTarget = (target) => {
     return dispatch => {
-        dispatch(setProxyEndpointPending(endpoint));
+        dispatch(setTargetPending(target));
 
         const options = {
             credentials: 'include',
             json: {
-                endpoint
+                target
             }
         };
 
-        return ky.post('http://localhost:8181/api/set-proxy-endpoint', options)
+        return ky.post('http://localhost:8181/api/set-target', options)
             .then(response => {
                 if (response.status === 200) {
-                    dispatch(setProxyEndpointFulfilled(endpoint));
+                    dispatch(setTargetFulfilled(target));
                 } else {
-                    console.log('Unknown status when setting proxy endpoint:', response.status);
-                    dispatch(setProxyEndpointRejected('Unknown status: ' + response.status));
+                    console.log('Unknown status when setting target:', response.status);
+                    dispatch(setTargetRejected('Unknown status: ' + response.status));
                 }
             })
-            .catch(err => {
-                console.log('Error setting proxy endpoint:', err);
-                dispatch(setProxyEndpointRejected('Unknown error: ' + err));
+            .catch(error => {
+                console.log('Error setting target:', error);
+                dispatch(setTargetRejected('Unknown error: ' + error));
             });
     };
 };

@@ -4,8 +4,7 @@ const MemoryStore = require('memorystore')(session)
 const parser = require('body-parser');
 const http = require('http');
 const httpProxy = require('http-proxy');
-const {URL} = require('url');
-const {setProxyEndpoint, getProxyEndpoint, saveCallbackHistory} = require('./database');
+const {setTarget, getTarget, saveCallbackHistory} = require('./database');
 const {authenticate} = require('./auth');
 const config = require('./config')();
 const {getUserAndPath, reverseDnsLookup, getRemoteAddress} = require('./util');
@@ -71,23 +70,23 @@ configApp.post('/api/logout', (request, response) => {
     }
     response.sendStatus(200);
 });
-configApp.post('/api/set-proxy-endpoint', (request, response) => {
+configApp.post('/api/set-target', (request, response) => {
     const username = request.session.username;
     if (username) {
-        const {endpoint} = request.body;
-        log.info(`Setting proxy endpoint for ${username} to ${endpoint}`);
-        setProxyEndpoint(username, endpoint);
+        const {target} = request.body;
+        log.info(`Setting target for ${username} to ${target}`);
+        setTarget(username, target);
         response.sendStatus(200);
     } else {
         response.sendStatus(401);
     }
 });
-configApp.get('/api/get-proxy-endpoint', (request, response) => {
+configApp.get('/api/get-target', (request, response) => {
     const username = request.session.username;
     if (username) {
-        log.info(`Getting proxy endpoint for ${username}`);
-        const endpoint = getProxyEndpoint(username);
-        response.send({endpoint});
+        log.info(`Getting target for ${username}`);
+        const target = getTarget(username);
+        response.send({target});
     } else {
         response.sendStatus(401);
     }
@@ -98,15 +97,16 @@ configApp.use(express.static('client'));
 const proxy = httpProxy.createProxyServer({});
 const proxyApp = http.createServer((request, response) => {
     const {username, path} = getUserAndPath(request.url);
-    const target = getProxyEndpoint(username);
+    const target = getTarget(username);
     if (!target) {
-        log.info(`Requested proxy for \'${username}\' but it's not configured`);
+        log.info(`Requested target for \'${username}\' but it's not configured`);
         response.writeHead(404);
         response.end();
         return;
     }
 
     const callbackData = {
+        target,
         remoteAddress: getRemoteAddress(request),
         headers: request.headers,
         path: request.url,

@@ -1,8 +1,8 @@
-import {GET_PROXY_ENDPOINT_FULFILLED, SET_PROXY_ENDPOINT_FULFILLED, PROXY_RESET} from './actions';
+import {GET_TARGET_FULFILLED, SET_TARGET_FULFILLED, PROXY_RESET} from './actions';
 
 const proxy = (
     state = {
-        endpoint: undefined
+        target: undefined
     },
     action
 ) => {
@@ -10,13 +10,13 @@ const proxy = (
         case PROXY_RESET:
             return {
                 ...state,
-                endpoint: undefined
+                target: undefined
             };
-        case SET_PROXY_ENDPOINT_FULFILLED:
-        case GET_PROXY_ENDPOINT_FULFILLED:
+        case SET_TARGET_FULFILLED:
+        case GET_TARGET_FULFILLED:
             return {
                 ...state,
-                endpoint: action.endpoint
+                target: action.target
             };
         default:
             return state;

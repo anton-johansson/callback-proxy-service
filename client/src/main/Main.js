@@ -2,34 +2,34 @@ import React, {Component} from 'react';
 import {Button, Card, CardTitle, CardText, TextField} from 'react-md';
 import {connect} from 'react-redux';
 import './Main.css';
-import {getEndpointSuggestion} from '../util';
+import {getTargetSuggestion} from '../util';
 
 // API functions
 import {logout} from '../api/auth/actions';
-import {setProxyEndpoint, getProxyEndpoint, reset as resetProxy} from '../api/proxy/actions';
+import {setTarget, getTarget, reset as resetProxy} from '../api/proxy/actions';
 
 class Main extends Component {
   constructor(props) {
       super(props);
-      this.state = {endpoint: props.endpoint || ''};
-      this.onEndpointChange = this.onEndpointChange.bind(this);
+      this.state = {target: props.target || ''};
+      this.onTargetChange = this.onTargetChange.bind(this);
       this.onLogout = this.onLogout.bind(this);
-      this.onSetEndpoint = this.onSetEndpoint.bind(this);
+      this.onSetTarget = this.onSetTarget.bind(this);
       this.onSuggest = this.onSuggest.bind(this);
   }
 
   componentDidMount() {
-    this.props.dispatch(getProxyEndpoint());
+    this.props.dispatch(getTarget());
   }
 
   componentDidUpdate(previousProps) {
-    if (previousProps.endpoint !== this.props.endpoint) {
-      this.setState({endpoint: this.props.endpoint || ''});
+    if (previousProps.target !== this.props.target) {
+      this.setState({target: this.props.target || ''});
     }
   }
 
-  onEndpointChange(endpoint) {
-    this.setState({endpoint});
+  onTargetChange(target) {
+    this.setState({target});
   }
 
   onLogout() {
@@ -37,15 +37,15 @@ class Main extends Component {
     this.props.dispatch(resetProxy());
   }
 
-  onSetEndpoint() {
-    const endpoint = this.state.endpoint;
-    this.props.dispatch(setProxyEndpoint(endpoint));
+  onSetTarget() {
+    const target = this.state.target;
+    this.props.dispatch(setTarget(target));
   }
 
   onSuggest() {
-    const endpoint = getEndpointSuggestion(this.props.clientAddress, this.props.clientHostname);
-    if (endpoint !== this.state.endpoint) {
-      this.setState({endpoint});
+    const target = getTargetSuggestion(this.props.clientAddress, this.props.clientHostname);
+    if (target !== this.state.target) {
+      this.setState({target});
     }
   }
 
@@ -54,14 +54,14 @@ class Main extends Component {
       <Card className="Main-card">
         <CardTitle title="Callback proxy" subtitle={`for ${this.props.name}`} />
         <CardText>
-          <TextField id="endpoint" label="Endpoint" type="text" value={this.state.endpoint} onChange={this.onEndpointChange} />
+          <TextField id="target" label="Target" type="text" value={this.state.target} onChange={this.onTargetChange} />
           <p>
-            <Button raised primary disabled={this.state.endpoint === this.props.endpoint} onClick={this.onSetEndpoint}>
-              Set endpoint
+            <Button raised primary disabled={this.state.target === this.props.target} onClick={this.onSetTarget}>
+              Set target
             </Button>
             &nbsp;
             <Button raised primary onClick={this.onSuggest}>
-              Suggest endpoint
+              Suggest target
             </Button>
             &nbsp;
             <Button raised primary onClick={this.onLogout}>
@@ -79,7 +79,7 @@ const mapStateToProps = state => ({
     name: state.authentication.name,
     clientAddress: state.authentication.clientAddress,
     clientHostname: state.authentication.clientHostname,
-    endpoint: state.proxy.endpoint
+    target: state.proxy.target
 });
 
 export default connect(mapStateToProps)(Main);

@@ -7,15 +7,15 @@ const adapter = new FileSync(config.fileName);
 const database = low(adapter);
 database.defaults({users: {}}).write();
 
-const setProxyEndpoint = (username, proxyEndpoint) => {
-    log.info(`Setting target to '${proxyEndpoint}' for ${username}`);
-    const key = `users.${username}.proxyEndpoint`;
-    database.set(key, proxyEndpoint).write();
+const setTarget = (username, target) => {
+    log.info(`Setting target to '${target}' for ${username}`);
+    const key = `users.${username}.target`;
+    database.set(key, target).write();
 };
 
-const getProxyEndpoint = (username) => {
+const getTarget = (username) => {
     log.info(`Getting target for ${username}`);
-    const key = `users.${username}.proxyEndpoint`;
+    const key = `users.${username}.target`;
     return database.get(key).value();
 }
 
@@ -36,4 +36,4 @@ const saveCallbackHistory = (username, callbackData) => {
     }
 }
 
-module.exports = {setProxyEndpoint, getProxyEndpoint, saveCallbackHistory};
+module.exports = {setTarget, getTarget, saveCallbackHistory};
