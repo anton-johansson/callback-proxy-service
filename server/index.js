@@ -115,7 +115,11 @@ const proxyApp = http.createServer((request, response) => {
 
     log.info(`Performing proxy request for ${username}`);
     request.url = path;
-    proxy.web(request, response, {target});
+    proxy.web(request, response, {target}, error => {
+        log.warn('Error occurred when proxying: ' + error, {data: {error}});
+        response.writeHead(500);
+        response.end();
+    });
 });
 
 // Start
