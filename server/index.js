@@ -48,7 +48,7 @@ configApp.get('/api/config', (request, response) => {
 });
 configApp.get('/api/check-authenticated', async (request, response) => {
     if (request.session && request.session.username) {
-        const clientAddress = '10.0.0.12'; //request.ip;
+        const clientAddress = request.ip;
         const lookup = await reverseDnsLookup(clientAddress);
         const clientHostname = lookup && lookup.length && lookup[0] || '';
 

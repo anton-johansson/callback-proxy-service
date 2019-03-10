@@ -17,7 +17,7 @@ module.exports.getUserAndPath = path => {
 };
 
 module.exports.reverseDnsLookup = ip => {
-    return dns.reverse(ip).catch(() => '');
+    return dns.reverse(ip).catch(() => ['']);
 };
 
 module.exports.getRemoteAddress = request => {
