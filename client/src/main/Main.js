@@ -7,7 +7,7 @@ import {getTargetSuggestion} from '../util';
 // API functions
 import {logout} from '../api/auth/actions';
 import {getConfig} from '../api/config/actions';
-import {setTarget, getTarget, reset as resetProxy} from '../api/proxy/actions';
+import {setTarget, getTarget} from '../api/proxy/actions';
 
 class Main extends Component {
   constructor(props) {
@@ -36,7 +36,6 @@ class Main extends Component {
 
   onLogout() {
     this.props.dispatch(logout());
-    this.props.dispatch(resetProxy());
   }
 
   onSetTarget() {
@@ -57,9 +56,14 @@ class Main extends Component {
         <CardTitle title="Callback proxy" subtitle={`for ${this.props.name}`} />
         <CardText>
           {this.props.proxyEndpoint &&
-          <pre className='proxy-legend'>
-            {this.props.proxyEndpoint}/{this.props.username} > {this.state.target ? this.state.target : '[None]'}
-          </pre>}
+          <div>
+            <pre className='proxy-legend'>
+              <b>From:</b><br />
+              {this.props.proxyEndpoint}/{this.props.username}<br /><br />
+              <b>To:</b><br />
+              {this.state.target ? this.state.target : '[None]'}<br />
+            </pre>
+          </div>}
           <TextField id="target" label="Target" type="text" value={this.state.target} onChange={this.onTargetChange} />
           <p>
             <Button raised primary disabled={this.state.target === this.props.target} onClick={this.onSetTarget}>

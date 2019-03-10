@@ -1,33 +1,66 @@
 import ky from 'ky';
+import {getTarget, reset as resetProxy} from '../proxy/actions';
+import {getConfig} from '../config/actions';
 
-export const RECEIVE_AUTHENTICATION = 'RECEIVE_AUTHENTICATION';
-const receiveAuthentication = (authentication) => ({
-    type: RECEIVE_AUTHENTICATION,
+export const CHECK_AUTHENTICATION_PENDING = 'CHECK_AUTHENTICATION_PENDING';
+const checkAuthenticationPending = () => ({
+    type: CHECK_AUTHENTICATION_PENDING
+});
+
+export const CHECK_AUTHENTICATION_FULFILLED = 'CHECK_AUTHENTICATION_FULFILLED';
+const checkAuthenticationFulfilled = authentication => ({
+    type: CHECK_AUTHENTICATION_FULFILLED,
     authentication
+});
+
+export const CHECK_AUTHENTICATION_REJECTED = 'CHECK_AUTHENTICATION_REJECTED';
+const checkAuthenticationRejected = () => ({
+    type: CHECK_AUTHENTICATION_REJECTED
 });
 
 export const checkAuthentication = () => {
     return dispatch => {
+        dispatch(checkAuthenticationPending());
+
         return ky.get('http://localhost:8181/api/check-authenticated', {credentials: 'include'})
             .then(async response => {
                 if (response.status === 200) {
                     const authentication = await response.json();
                     console.log('Is authenticated as', authentication.username);
-                    dispatch(receiveAuthentication(authentication))
+                    dispatch(checkAuthenticationFulfilled(authentication))
+                    //dispatch(getTarget());
+                    //dispatch(getConfig());
                 } else {
                     console.log('Is not authenticated');
-                    dispatch(receiveAuthentication());
+                    dispatch(checkAuthenticationRejected());
                 }
             })
             .catch(err => {
                 console.log('Error checking authentication:', err);
-                dispatch(receiveAuthentication());
+                dispatch(checkAuthenticationRejected());
             })
     };
-};
+}
+
+export const LOGIN_PENDING = 'LOGIN_PENDING';
+const loginPending = () => ({
+    type: LOGIN_PENDING
+});
+
+export const LOGIN_FULFILLED = 'LOGIN_FULFILLED';
+const loginFulfilled = () => ({
+    type: LOGIN_FULFILLED
+});
+
+export const LOGIN_REJECTED = 'LOGIN_REJECTED';
+const loginRejected = () => ({
+    type: LOGIN_REJECTED
+});
 
 export const login = (username, password) => {
     return dispatch => {
+        dispatch(loginPending());
+
         const options = {
             credentials: 'include',
             json: {
@@ -40,22 +73,47 @@ export const login = (username, password) => {
             .then(async response => {
                 if (response.status === 200) {
                     console.log('Successfully logged in, checking credentials');
+                    dispatch(loginFulfilled());
                     dispatch(checkAuthentication());
                 } else {
                     console.log('Bad credentials');
-                    dispatch(receiveAuthentication());
+                    dispatch(loginRejected());
                 }
             })
             .catch(err => {
                 console.log('Error authenticating:', err);
-                dispatch(receiveAuthentication());
+                dispatch(loginRejected());
             });
     };
 };
 
+export const LOGOUT_PENDING = 'LOGOUT_PENDING';
+const logoutPending = () => ({
+    type: LOGOUT_PENDING
+});
+
+export const LOGOUT_FULFILLED = 'LOGOUT_FULFILLED';
+const logoutFulfilled = () => ({
+    type: LOGOUT_FULFILLED
+});
+
+export const LOGOUT_REJECTED = 'LOGOUT_REJECTED';
+const logoutRejected = () => ({
+    type: LOGOUT_REJECTED
+});
+
 export const logout = () => {
     return dispatch => {
+        dispatch(logoutPending())
+
         return ky.post('http://localhost:8181/api/logout', {credentials: 'include'})
-            .then(_ => dispatch(receiveAuthentication()));
+            .then(_ => {
+                dispatch(logoutFulfilled());
+                dispatch(resetProxy());
+            })
+            .catch(_ => {
+                dispatch(logoutRejected());
+                dispatch(resetProxy());
+            });
     };
 };
