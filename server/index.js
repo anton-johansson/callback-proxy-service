@@ -35,6 +35,17 @@ configApp.use('/api/', (_, response, next) => {
     response.setHeader('Access-Control-Allow-Credentials', true);
     next();
 });
+configApp.get('/api/config', (request, response) => {
+    if (request.session && request.session.username) {
+        log.debug(`User ${request.session.username} requested config`);
+        response.send({
+            proxyEndpoint: config.http && config.http.proxyEndpoint,
+            suggestionPath: config.ui && config.ui.suggestionPath
+        });
+    } else {
+        response.sendStatus(401);
+    }
+});
 configApp.get('/api/check-authenticated', async (request, response) => {
     if (request.session && request.session.username) {
         const clientAddress = '10.0.0.12'; //request.ip;

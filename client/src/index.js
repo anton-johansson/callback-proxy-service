@@ -10,6 +10,7 @@ import thunkMiddleware from 'redux-thunk';
 
 // Reducers
 import authReducer from './api/auth/reducers';
+import configReducer from './api/config/reducers';
 import proxyReducer from './api/proxy/reducers';
 
 // Actual application
@@ -28,6 +29,7 @@ const loggerMiddleware = createLogger();
 const store = createStore(
     combineReducers({
         authentication: authReducer,
+        config: configReducer,
         proxy: proxyReducer
     }),
     applyMiddleware(

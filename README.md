@@ -40,6 +40,7 @@ The service is configured using a YAML file, located at `/etc/callback-proxy-ser
 http:
   configPort: 8181
   proxyPort: 8182
+  proxyEndpoint: https://callback-proxy.example.com
   session:
     secret: ...
 ui:

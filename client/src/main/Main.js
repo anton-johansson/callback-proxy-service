@@ -6,6 +6,7 @@ import {getTargetSuggestion} from '../util';
 
 // API functions
 import {logout} from '../api/auth/actions';
+import {getConfig} from '../api/config/actions';
 import {setTarget, getTarget, reset as resetProxy} from '../api/proxy/actions';
 
 class Main extends Component {
@@ -20,6 +21,7 @@ class Main extends Component {
 
   componentDidMount() {
     this.props.dispatch(getTarget());
+    this.props.dispatch(getConfig());
   }
 
   componentDidUpdate(previousProps) {
@@ -43,7 +45,7 @@ class Main extends Component {
   }
 
   onSuggest() {
-    const target = getTargetSuggestion(this.props.clientAddress, this.props.clientHostname);
+    const target = getTargetSuggestion(this.props.clientAddress, this.props.clientHostname, this.props.suggestionPath);
     if (target !== this.state.target) {
       this.setState({target});
     }
@@ -54,6 +56,10 @@ class Main extends Component {
       <Card className="Main-card">
         <CardTitle title="Callback proxy" subtitle={`for ${this.props.name}`} />
         <CardText>
+          {this.props.proxyEndpoint &&
+          <pre className='proxy-legend'>
+            {this.props.proxyEndpoint}/{this.props.username} > {this.state.target ? this.state.target : '[None]'}
+          </pre>}
           <TextField id="target" label="Target" type="text" value={this.state.target} onChange={this.onTargetChange} />
           <p>
             <Button raised primary disabled={this.state.target === this.props.target} onClick={this.onSetTarget}>
@@ -79,6 +85,8 @@ const mapStateToProps = state => ({
     name: state.authentication.name,
     clientAddress: state.authentication.clientAddress,
     clientHostname: state.authentication.clientHostname,
+    proxyEndpoint: state.config.proxyEndpoint,
+    suggestionPath: state.config.suggestionPath,
     target: state.proxy.target
 });
 

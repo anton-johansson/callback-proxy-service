@@ -1,4 +1,4 @@
-export const getTargetSuggestion = (clientAddress, clientHostname) => {
+export const getTargetSuggestion = (clientAddress, clientHostname, suggestionPath) => {
     const identifier = clientHostname ? clientHostname : clientAddress;
-    return `http://${identifier}`;
+    return `http://${identifier}${suggestionPath ? suggestionPath : ''}`;
 };
