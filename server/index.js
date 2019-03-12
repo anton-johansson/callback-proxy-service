@@ -4,7 +4,7 @@ const MemoryStore = require('memorystore')(session)
 const parser = require('body-parser');
 const http = require('http');
 const httpProxy = require('http-proxy');
-const {setTarget, getTarget, saveCallbackHistory} = require('./database');
+const {setTarget, getTarget, saveCallbackHistory, getCallbackHistory} = require('./database');
 const {authenticate} = require('./auth');
 const config = require('./config')();
 const {getUserAndPath, reverseDnsLookup, getRemoteAddress} = require('./util');
@@ -100,6 +100,15 @@ configApp.get('/api/get-target', (request, response) => {
         response.sendStatus(401);
     }
 });
+configApp.get('/api/callback-history', (request, response) => {
+    const username = request.session.username;
+    if (username) {
+        const callbackHistory = getCallbackHistory(username);
+        response.send(callbackHistory);
+    } else {
+        response.sendStatus(401);
+    }
+})
 configApp.use(express.static('client'));
 
 // Proxy application
@@ -118,7 +127,7 @@ const proxyApp = http.createServer((request, response) => {
         target,
         remoteAddress: getRemoteAddress(request),
         headers: request.headers,
-        path: request.url,
+        path,
         method: request.method
         //body: ???
     };

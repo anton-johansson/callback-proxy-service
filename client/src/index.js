@@ -11,7 +11,9 @@ import thunkMiddleware from 'redux-thunk';
 // Reducers
 import authReducer from './api/auth/reducers';
 import configReducer from './api/config/reducers';
+import historyReducer from './api/history/reducers';
 import proxyReducer from './api/proxy/reducers';
+import sceneReducer from './api/scene/reducers';
 
 // Actual application
 import './index.css';
@@ -30,7 +32,9 @@ const store = createStore(
     combineReducers({
         authentication: authReducer,
         config: configReducer,
-        proxy: proxyReducer
+        history: historyReducer,
+        proxy: proxyReducer,
+        scene: sceneReducer
     }),
     applyMiddleware(
         thunkMiddleware,

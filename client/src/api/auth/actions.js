@@ -1,6 +1,6 @@
 import ky from 'ky';
-import {getTarget, reset as resetProxy} from '../proxy/actions';
-import {getConfig} from '../config/actions';
+import {reset as resetProxy} from '../proxy/actions';
+import {setScene} from '../scene/actions';
 
 export const CHECK_AUTHENTICATION_PENDING = 'CHECK_AUTHENTICATION_PENDING';
 const checkAuthenticationPending = () => ({
@@ -27,9 +27,8 @@ export const checkAuthentication = () => {
                 if (response.status === 200) {
                     const authentication = await response.json();
                     console.log('Is authenticated as', authentication.username);
-                    dispatch(checkAuthenticationFulfilled(authentication))
-                    //dispatch(getTarget());
-                    //dispatch(getConfig());
+                    dispatch(checkAuthenticationFulfilled(authentication));
+                    dispatch(setScene('main'));
                 } else {
                     console.log('Is not authenticated');
                     dispatch(checkAuthenticationRejected());
@@ -106,14 +105,14 @@ export const logout = () => {
     return dispatch => {
         dispatch(logoutPending())
 
+        const onLogout = action => {
+            dispatch(action());
+            dispatch(resetProxy());
+            dispatch(setScene('login'));
+        };
+
         return ky.post('http://localhost:8181/api/logout', {credentials: 'include'})
-            .then(_ => {
-                dispatch(logoutFulfilled());
-                dispatch(resetProxy());
-            })
-            .catch(_ => {
-                dispatch(logoutRejected());
-                dispatch(resetProxy());
-            });
+            .then(_ => onLogout(logoutFulfilled))
+            .catch(_ => onLogout(logoutRejected));
     };
 };

@@ -59,4 +59,10 @@ const saveCallbackHistory = (username, callbackData) => {
     }
 }
 
-module.exports = {setTarget, getTarget, saveCallbackHistory};
+const getCallbackHistory = username => {
+    log.info(`Getting callback history for ${username}`);
+    const key = `users.${username}.callbackHistory`;
+    return database.get(key).value();
+};
+
+module.exports = {setTarget, getTarget, saveCallbackHistory, getCallbackHistory};

@@ -8,6 +8,7 @@ import {getTargetSuggestion} from '../util';
 import {logout} from '../api/auth/actions';
 import {getConfig} from '../api/config/actions';
 import {setTarget, getTarget} from '../api/proxy/actions';
+import {setScene} from '../api/scene/actions';
 
 class Main extends Component {
   constructor(props) {
@@ -16,6 +17,7 @@ class Main extends Component {
       this.onTargetChange = this.onTargetChange.bind(this);
       this.onLogout = this.onLogout.bind(this);
       this.onSetTarget = this.onSetTarget.bind(this);
+      this.onCallbackHistory = this.onCallbackHistory.bind(this);
       this.onSuggest = this.onSuggest.bind(this);
   }
 
@@ -41,6 +43,10 @@ class Main extends Component {
   onSetTarget() {
     const target = this.state.target;
     this.props.dispatch(setTarget(target));
+  }
+
+  onCallbackHistory() {
+    this.props.dispatch(setScene('callback-history'));
   }
 
   onSuggest() {
@@ -72,6 +78,10 @@ class Main extends Component {
             &nbsp;
             <Button raised primary onClick={this.onSuggest}>
               Suggest target
+            </Button>
+            &nbsp;
+            <Button raised primary onClick={this.onCallbackHistory}>
+              Callback history
             </Button>
             &nbsp;
             <Button raised primary onClick={this.onLogout}>
