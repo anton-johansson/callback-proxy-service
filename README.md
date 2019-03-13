@@ -65,3 +65,8 @@ log:
 ## Deploying
 
 The service exposes two ports. One port (`8182`) for the actual proxy calls. This one needs to be exposed publically. The other port (`8181`) provides a UI for configuring proxy endpoints and should only be exposed on the local network.
+
+
+### Kubernetes
+
+There's an example Kubernetes deployment file [here](./deploy).
