@@ -1,4 +1,5 @@
 import ky from 'ky';
+import {apiURL} from '../../util';
 
 export const GET_CONFIG_PENDING = 'GET_CONFIG_PENDING';
 const getConfigPending = () => ({
@@ -22,7 +23,7 @@ export const getConfig = () => {
     return dispatch => {
         dispatch(getConfigPending());
 
-        return ky.get('http://localhost:8181/api/config', {credentials: 'include'})
+        return ky.get(`${apiURL}/api/config`, {credentials: 'include'})
             .then(async response => {
                 if (response.status === 200) {
                     const data = await response.json();

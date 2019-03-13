@@ -1,4 +1,5 @@
 import ky from 'ky';
+import {apiURL} from '../../util';
 
 export const GET_CALLBACK_HISTORY_PENDING = 'GET_CALLBACK_HISTORY_PENDING';
 const getCallbackHistoryPending = () => ({
@@ -21,7 +22,7 @@ export const getCallbackHistory = () => {
     return dispatch => {
         dispatch(getCallbackHistoryPending());
 
-        return ky.get('http://localhost:8181/api/callback-history', {credentials: 'include'})
+        return ky.get(`${apiURL}/api/callback-history`, {credentials: 'include'})
             .then(async response => {
                 if (response.status === 200) {
                     const data = await response.json();
