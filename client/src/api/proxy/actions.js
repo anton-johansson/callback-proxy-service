@@ -1,4 +1,5 @@
 import ky from 'ky';
+import {apiURL} from '../../util';
 
 export const PROXY_RESET = 'PROXY_RESET';
 export const reset = () => ({
@@ -26,7 +27,7 @@ export const getTarget = () => {
     return dispatch => {
         dispatch(getTargetPending());
 
-        return ky.get('http://localhost:8181/api/get-target', {credentials: 'include'})
+        return ky.get(`${apiURL}/api/get-target`, {credentials: 'include'})
             .then(async response => {
                 if (response.status === 200) {
                     const data = await response.json();
@@ -71,7 +72,7 @@ export const setTarget = (target) => {
             }
         };
 
-        return ky.post('http://localhost:8181/api/set-target', options)
+        return ky.post(`${apiURL}/api/set-target`, options)
             .then(response => {
                 if (response.status === 200) {
                     dispatch(setTargetFulfilled(target));

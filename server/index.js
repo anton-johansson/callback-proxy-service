@@ -29,12 +29,14 @@ configApp.use('/api/', session({
         ttl: 86400000 * 30
     })
 }));
-configApp.use('/api/', (_, response, next) => {
-    response.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
-    response.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    response.setHeader('Access-Control-Allow-Credentials', true);
-    next();
-});
+if (process.env.NODE_ENV === 'development') {
+    configApp.use('/api/', (_, response, next) => {
+        response.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+        response.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+        response.setHeader('Access-Control-Allow-Credentials', true);
+        next();
+    });
+}
 configApp.get('/api/config', (request, response) => {
     if (request.session && request.session.username) {
         log.debug(`User ${request.session.username} requested config`);

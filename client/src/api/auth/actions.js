@@ -1,6 +1,7 @@
 import ky from 'ky';
 import {reset as resetProxy} from '../proxy/actions';
 import {setScene} from '../scene/actions';
+import {apiURL} from '../../util';
 
 export const CHECK_AUTHENTICATION_PENDING = 'CHECK_AUTHENTICATION_PENDING';
 const checkAuthenticationPending = () => ({
@@ -22,7 +23,7 @@ export const checkAuthentication = () => {
     return dispatch => {
         dispatch(checkAuthenticationPending());
 
-        return ky.get('http://localhost:8181/api/check-authenticated', {credentials: 'include'})
+        return ky.get(`${apiURL}/api/check-authenticated`, {credentials: 'include'})
             .then(async response => {
                 if (response.status === 200) {
                     const authentication = await response.json();
@@ -68,7 +69,7 @@ export const login = (username, password) => {
             }
         };
 
-        return ky.post('http://localhost:8181/api/authenticate', options)
+        return ky.post(`${apiURL}/api/authenticate`, options)
             .then(async response => {
                 if (response.status === 200) {
                     console.log('Successfully logged in, checking credentials');
@@ -111,7 +112,7 @@ export const logout = () => {
             dispatch(setScene('login'));
         };
 
-        return ky.post('http://localhost:8181/api/logout', {credentials: 'include'})
+        return ky.post(`${apiURL}/api/logout`, {credentials: 'include'})
             .then(_ => onLogout(logoutFulfilled))
             .catch(_ => onLogout(logoutRejected));
     };
