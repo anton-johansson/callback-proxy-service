@@ -50,7 +50,7 @@ configApp.get('/api/config', (request, response) => {
 });
 configApp.get('/api/check-authenticated', async (request, response) => {
     if (request.session && request.session.username) {
-        const clientAddress = request.ip;
+        const clientAddress = getRemoteAddress(request);
         const lookup = await reverseDnsLookup(clientAddress);
         const clientHostname = lookup && lookup.length && lookup[0] || '';
 
