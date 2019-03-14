@@ -3,7 +3,7 @@
 Provides an HTTP service that is useful for developers working with third party services performing some kind of webhooks. You set up a local proxy, and make it publically available over the internet and you use that public address when communicating with the third party. Those public webhook calls will smoothly land on your local development environment.
 
 [![Build status](https://travis-ci.org/anton-johansson/callback-proxy-service.svg?branch=master)](https://travis-ci.org/anton-johansson/callback-proxy-service)
-[![Version](https://img.shields.io/github/package-json/v/anton-johansson/callback-proxy-service.svg)](https://github.com/anton-johansson/callback-proxy-service/releases)
+[![Release](https://img.shields.io/github/release/anton-johansson/callback-proxy-service.svg)](https://github.com/anton-johansson/callback-proxy-service/releases)
 [![Docker image pulls](https://img.shields.io/docker/pulls/antonjohansson/callback-proxy-service.svg)](https://hub.docker.com/r/antonjohansson/callback-proxy-service)
 [![Docker image layers](https://img.shields.io/microbadger/layers/antonjohansson/callback-proxy-service.svg)](https://hub.docker.com/r/antonjohansson/callback-proxy-service)
 [![Docker image size](https://img.shields.io/microbadger/image-size/antonjohansson/callback-proxy-service.svg)](https://hub.docker.com/r/antonjohansson/callback-proxy-service)
