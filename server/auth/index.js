@@ -33,6 +33,11 @@ const authenticate = (username, password) => {
             client.destroy();
         };
 
+        if (!username) {
+            reject('Username is mandatory');
+            return;
+        }
+
         log.debug(`Searching for user ${username}`);
         client.bind(`${username}@${config.domain}`, password, function(error) {
             if (error) {
