@@ -9,7 +9,6 @@ import {login} from '../api/auth/actions';
 class Login extends Component {
   constructor(props) {
       super(props);
-      this.onLogin = props.onLogin;
       this.usernameRef = React.createRef();
       this.passwordRef = React.createRef();
       this.state = {
