@@ -8,11 +8,7 @@ const {setTarget, getTarget, saveCallbackHistory, getCallbackHistory} = require(
 const {authenticate} = require('./auth');
 const config = require('./config')();
 const {getUserAndPath, reverseDnsLookup, getRemoteAddress} = require('./util');
-const {logging, setLevel} = require('./logging');
-
-// Set up logging
-setLevel(config.log.level);
-const log = logging(module);
+const log = require('./logging')(module);
 
 // Config application
 const configApp = express();

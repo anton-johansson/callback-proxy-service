@@ -1,7 +1,6 @@
 const ldap = require('ldapjs');
-const {readFileSync} = require('fs');
 const config = require('../config')().ldap;
-const log = require('../logging').logging(module);
+const log = require('../logging')(module);
 
 /*
 let ca = undefined;

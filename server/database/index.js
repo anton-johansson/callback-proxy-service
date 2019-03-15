@@ -1,7 +1,7 @@
 const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
 const config = require('../config')().database;
-const log = require('../logging').logging(module);
+const log = require('../logging')(module);
 
 const adapter = new FileSync(config.fileName);
 const database = low(adapter);
