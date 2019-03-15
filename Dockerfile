@@ -12,4 +12,4 @@ COPY --chown=node:node server /opt/callback-proxy-service/server
 COPY --chown=node:node node_modules /opt/callback-proxy-service/node_modules
 COPY --chown=node:node client/build /opt/callback-proxy-service/client
 
-ENTRYPOINT ["nodejs", "server/index.js"]
+ENTRYPOINT ["nodejs", "--no-warnings", "server/index.js"]
