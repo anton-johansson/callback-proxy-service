@@ -3,4 +3,4 @@ export const getTargetSuggestion = (clientAddress, clientHostname, suggestionPat
     return `http://${identifier}${suggestionPath ? suggestionPath : ''}`;
 };
 
-export const apiURL = process.env.NODE_ENV === 'development' ? 'http://localhost:8181' : '';
+export const apiURL = process.env.REACT_APP_DEV_MODE ? 'http://localhost:8181' : '';

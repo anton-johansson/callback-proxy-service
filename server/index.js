@@ -25,7 +25,8 @@ configApp.use('/api/', session({
         ttl: 86400000 * 30
     })
 }));
-if (process.env.NODE_ENV === 'development') {
+if (process.env.REACT_APP_DEV_MODE) {
+    log.warn('Running in development mode!');
     configApp.use('/api/', (_, response, next) => {
         response.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
         response.setHeader('Access-Control-Allow-Headers', 'Content-Type');
