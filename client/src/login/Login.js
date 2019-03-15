@@ -29,13 +29,19 @@ class Login extends Component {
     this.props.dispatch(login(username, password));
   };
 
+  onKeyPress = event => {
+    if (event.key === 'Enter') {
+      this.handleLogin();
+    }
+  }
+
   render() {
     return (
       <Card className="Login-card">
         <CardTitle title="Login" subtitle="Use your domain credentials" />
         <CardText>
-          <TextField id="username" label="Username" type="text" ref={this.usernameRef} />
-          <TextField id="password" label="Password" type="password" ref={this.passwordRef} />
+          <TextField id="username" label="Username" type="text" ref={this.usernameRef} onKeyPress={this.onKeyPress} />
+          <TextField id="password" label="Password" type="password" ref={this.passwordRef} onKeyPress={this.onKeyPress} />
           <Button raised primary onClick={this.handleLogin}>
             Login
           </Button>
