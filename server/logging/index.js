@@ -9,5 +9,17 @@ const getLoggerName = callingModule => {
 
 module.exports = callingModule => {
     const loggerName = getLoggerName(callingModule);
-    return new Logger({level: config.level, loggerName});
+    const logger = new Logger({level: config.level, loggerName});
+    logger.head = level => {
+        const data = {};
+        if (logger.options.timestamp) {
+            data.timestamp = logger.timestamp();
+        }
+        data.level = level.toUpperCase();
+        if (logger.options.loggerName) {
+            data.loggerName = logger.options.loggerName;
+        }
+        return data;
+    }
+    return logger;
 };
