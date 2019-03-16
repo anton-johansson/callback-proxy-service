@@ -1,6 +1,6 @@
 {
   "name": "callback-proxy-service",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": true,
   "scripts": {
     "client": "cd client && concurrently --kill-others-on-fail \"npm run watch-css\" \"npm run start\"",
