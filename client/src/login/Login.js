@@ -11,20 +11,11 @@ class Login extends Component {
       super(props);
       this.usernameRef = React.createRef();
       this.passwordRef = React.createRef();
-      this.state = {
-          username: '',
-          loading: true,
-      };
   }
 
   handleLogin = () => {
-    this.setState({
-      loading: true
-    });
-
     const username = this.usernameRef.current.value;
     const password = this.passwordRef.current.value;
-
     this.props.dispatch(login(username, password));
   };
 

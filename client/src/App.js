@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {Button, DialogContainer} from 'react-md'
 import {connect} from 'react-redux';
 import LoadingOverlay from 'react-loading-overlay';
 import Login from './login/Login';
@@ -8,6 +9,7 @@ import './App.css';
 
 // API functions
 import {checkAuthentication} from './api/auth/actions';
+import {popError} from './api/error/actions';
 import {setScene} from './api/scene/actions';
 
 class App extends Component {
@@ -16,9 +18,32 @@ class App extends Component {
     this.props.dispatch(checkAuthentication());
   }
 
+  onRemoveError = () => {
+    this.props.dispatch(popError());
+  };
+
   render() {
+    const errorMessage = this.props.errorMessages.length > 0 && this.props.errorMessages[0];
+    const hasError = errorMessage && errorMessage.length > 0;
+    console.log('errorMessage', errorMessage);
+    console.log('hasError', hasError);
     return (
       <LoadingOverlay active={this.props.isLoading} fadeSpeed={100} spinner text='Loading...'>
+        <DialogContainer
+          id='error'
+          title='Error occurred'
+          visible={hasError}
+          onHide={this.onRemoveError}
+          modal
+          width='40%'
+          focusOnMount={false}>
+          <div>{errorMessage}</div>
+          <div>
+            <Button raised primary onClick={this.onRemoveError}>
+              OK
+            </Button>
+          </div>
+        </DialogContainer>
         <div>
           {this.props.scene === 'main' && <Main/>}
           {this.props.scene === 'login' && <Login/>}
@@ -31,6 +56,7 @@ class App extends Component {
 
 const mapStateToProps = state => ({
     username: state.authentication.username,
+    errorMessages: state.error.errorMessages,
     scene: state.scene.current,
     isLoading: state.authentication.isLoading || state.config.isLoading || state.history.isLoading || state.proxy.isLoading
 });

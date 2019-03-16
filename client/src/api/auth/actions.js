@@ -1,6 +1,7 @@
 import ky from 'ky';
 import {reset as resetProxy} from '../proxy/actions';
 import {setScene} from '../scene/actions';
+import {addError} from '../error/actions';
 import {apiURL} from '../../util';
 
 export const CHECK_AUTHENTICATION_PENDING = 'CHECK_AUTHENTICATION_PENDING';
@@ -78,11 +79,13 @@ export const login = (username, password) => {
                 } else {
                     console.log('Bad credentials');
                     dispatch(loginRejected());
+                    dispatch(addError('Bad credentials'));
                 }
             })
             .catch(err => {
                 console.log('Error authenticating:', err);
                 dispatch(loginRejected());
+                dispatch(addError('Bad credentials'));
             });
     };
 };
