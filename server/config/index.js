@@ -11,11 +11,18 @@ const defaultConfig = {
     ui: {
         suggestionPath: ':8080'
     },
-    ldap: {
-        attributes: {
-            username: 'sAMAccountName',
-            name: 'cn',
-            email: 'mail'
+    auth: {
+        ldap: {
+            enabled: false,
+            attributes: {
+                username: 'sAMAccountName',
+                name: 'cn',
+                email: 'mail'
+            }
+        },
+        static: {
+            enabled: false,
+            users: []
         }
     },
     database: {

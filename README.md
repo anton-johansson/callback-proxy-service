@@ -49,14 +49,23 @@ database:
   fileName: /var/callback-proxy-service/callback-proxy-service.json
   callbackHistorySize: 10
   targetHistorySize: 10
-ldap:
-  domain: ...
-  url: ...
-  searchBase: ...
-  attributes:
-    username: sAMAccountName
-    name: cn
-    email: mail
+auth:
+  static:
+    enabled: true
+    users:
+      - username: anton
+        password: secret
+        name: Anton Johansson
+        email: anton@anton-johasson.com
+  ldap:
+    enabled: false
+    domain: ...
+    url: ...
+    searchBase: ...
+    attributes:
+      username: sAMAccountName
+      name: cn
+      email: mail
 log:
   level: warn
 ```
