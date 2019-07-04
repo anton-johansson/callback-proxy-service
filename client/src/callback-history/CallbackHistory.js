@@ -62,7 +62,7 @@ class CallbackHistory extends Component {
           <Button raised primary onClick={this.onUnselectHistory}>
             Close
           </Button>
-        </DialogContainer>}
+        </DialogContainer>
         <Card className="CallbackHistory-card">
             <CardTitle title="Callback history" subtitle={`for ${this.props.name}`} />
             <CardText>
