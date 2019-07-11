@@ -24,14 +24,16 @@ data:
       fileName: /var/callback-proxy-service/callback-proxy-service.json
       callbackHistorySize: 10
       targetHistorySize: 10
-    ldap:
-      domain: ...
-      url: ldaps://...
-      searchBase: OU=Users,DC=example,DC=local
-      attributes:
-        username: sAMAccountName
-        name: cn
-        email: mail
+    auth:
+      ldap:
+        enabled: true
+        domain: ...
+        url: ldaps://...
+        searchBase: OU=Users,DC=example,DC=local
+        attributes:
+          username: sAMAccountName
+          name: cn
+          email: mail
     log:
       level: info
 
