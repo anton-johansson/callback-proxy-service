@@ -57,7 +57,7 @@ spec:
     spec:
       containers:
         - name: callback-proxy-service
-          image: antonjohansson/callback-proxy-service:v1.0.0
+          image: antonjohansson/callback-proxy-service:v1.2.0
           ports:
             - name: config
               port: 8181
